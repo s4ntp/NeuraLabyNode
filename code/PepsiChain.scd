@@ -149,6 +149,9 @@ q.nudge = { |q, step = 0.1, seed = 4711|
 		}
 	}
 };
+
+q.myseeds = q.myseeds ?? { 16.collect { 1000.rand } };
+
 /*
 q.nudge(0.1, 123);
 q.nudge(-0.1, 123);
@@ -185,6 +188,7 @@ fork ({
 	q.pchain.add(\ins, 1);
 	q.pchain.add(\limiter, 1);
 
-	// add lag to all params.
+	//// add lag to all params.
+	//// not sure that this works???
 	q.pchain.proxy.lag(*q.pchain.proxy.controlKeys.collect([_, 3]).flat);
 });

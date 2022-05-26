@@ -5,9 +5,6 @@ MKtl(\xtouch).gui.showLabels;
 MKtl.all[\xtouch].free;
 MKtl(\xtouch, "*x-touch-mini");
 
-q = q ? ();
-q.myseeds = q.myseeds ?? { 16.collect { 1000.rand } };
-
 // first encoder does less/more
 MKtl(\xtouch).elAt(\A, \chan, 0, \enc, 0).action_({ |enc|
 	var diff = (enc.deviceValue - enc.prevDeviceValue).clip2(5);

@@ -1,15 +1,10 @@
 MKtl.all[\beatstep].free;
 MKtl(\beatstep, "arturia-beatstep-rel-16").desc;
 
-
 /*
 MKtl(\beatstep).desc.openFile;
 MKtl(\beatstep).gui.showLabels;
 */
-
-
-q = q ? ();
-q.myseeds = q.myseeds ?? { 16.collect { 1000.rand } };
 
 // upper pads nudge up, lower pads nudge down
 MKtl(\beatstep).elAt(0, \pad, nil, \on).do { |pad, i|

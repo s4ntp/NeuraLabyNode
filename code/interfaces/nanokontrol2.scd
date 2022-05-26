@@ -5,10 +5,6 @@ MKtl(\nanokontrol2).gui.showLabels;
 MKtl.all[\nanokontrol2].free;
 MKtl(\nanokontrol2, "*trol2");
 
-
-q = q ? ();
-q.myseeds = q.myseeds ?? { 16.collect { 1000.rand } };
-
 MKtl(\nanokontrol2).elAt(\kn, 0).action_({ |kn|
 	var delta = (kn.value - kn.prevValue).clip2(0.07);
 	q.stepDryWet(delta * 2);

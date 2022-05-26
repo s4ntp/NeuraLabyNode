@@ -6,10 +6,6 @@ MKtl(\lpd8).gui.showLabels;
 MKtl.all[\lpd8].free;
 MKtl(\lpd8, "akai-lpd8").desc;
 
-
-q = q ? ();
-q.myseeds = q.myseeds ?? { 16.collect { 1000.rand } };
-
 MKtl(\lpd8).elAt(\kn, 0).action_({ |kn|
 	var delta = (kn.value - kn.prevValue).clip2(0.07);
 	q.stepDryWet(delta * 2)
