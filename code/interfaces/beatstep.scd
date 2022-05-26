@@ -26,6 +26,26 @@ MKtl(\beatstep).elAt(0, \pad, nil, \on).do { |pad, i|
 	};
 };
 
+MKtl(\beatstep).elAt(0, \pad, 0, \on)
+.action_({ q.preset.stepCurr(1) })
+.elemDesc.label_("pre L +");
+MKtl(\beatstep).elAt(0, \pad, 8, \on)
+.action_({ q.preset.stepCurr(-1) })
+.elemDesc.label_("pre L -");
+MKtl(\beatstep).elAt(0, \pad, 1, \on)
+.action_({ q.preset.stepCurr(q.preset.settings.size.rand) })
+.elemDesc.label_("pre L ?");
+
+MKtl(\beatstep).elAt(0, \pad, 2, \on)
+.action_({ q.preset.stepTarg(1) })
+.elemDesc.label_("pre R +");
+MKtl(\beatstep).elAt(0, \pad, 10, \on)
+.action_({ q.preset.stepTarg(-1) })
+.elemDesc.label_("pre R -");
+MKtl(\beatstep).elAt(0, \pad, 9, \on)
+.action_({ q.preset.stepTarg(q.preset.settings.size.rand) })
+.elemDesc.label_("pre R ?");
+
 // all knobs except first nudge params relative up/down
 MKtl(\beatstep).elAt(0, \kn, (1..15)).do { |knob, i|
 	knob.deviceValue = 64;
@@ -46,6 +66,16 @@ MKtl(\beatstep).elAt(0, \kn, 0).action = { |knob|
 		var nudgeval = knob.deviceValue.clip(55, 73) - 64 * 0.01;
 		q.stepDryWet(nudgeval);
 		// "lessMore step %\n".postf(nudgeval);
+		defer ({ knob.deviceValue = 64 }, 0.02);
+	};
+};
+
+// first knob bottom row nudges preset morph left/right:
+MKtl(\beatstep).elAt(0, \kn, 8).elemDesc.label = "Left Right";
+MKtl(\beatstep).elAt(0, \kn, 8).action = { |knob|
+	knob.action = { |knob|
+		var nudgeval = knob.deviceValue.clip(55, 73) - 64 * 0.01;
+		q.preset.morphValStep(q.preset.morphVal + nudgeval);
 		defer ({ knob.deviceValue = 64 }, 0.02);
 	};
 };
