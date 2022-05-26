@@ -6,7 +6,7 @@ MKtl.all[\xtouch].free;
 MKtl(\xtouch, "*x-touch-mini");
 
 q = q ? ();
-q.myseeds = 8.collect { 1000.rand };
+q.myseeds = q.myseeds ?? { 16.collect { 1000.rand } };
 
 // first encoder does less/more
 MKtl(\xtouch).elAt(\A, \chan, 0, \enc, 0).action_({ |enc|

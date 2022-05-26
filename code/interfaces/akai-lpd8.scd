@@ -8,8 +8,7 @@ MKtl(\lpd8, "akai-lpd8").desc;
 
 
 q = q ? ();
-q.myseeds = 4.collect { 1000.rand }.postln;
-q.knobseeds = 7.collect { 1000.rand }.postln;
+q.myseeds = q.myseeds ?? { 16.collect { 1000.rand } };
 
 MKtl(\lpd8).elAt(\kn, 0).action_({ |kn|
 	var delta = (kn.value - kn.prevValue).clip2(0.07);
@@ -22,7 +21,7 @@ MKtl(\lpd8).elAt(\kn, (1..7)).do { |kn, i|
 	kn.action = { |kn|
 		var nudgeval = ((kn.deviceValue - kn.prevDeviceValue)).clip2(5);
 		var stepval = nudgeval * 0.01;
-		var nudgeseed = q.knobseeds[i];
+		var nudgeseed = q.myseeds.wrapAt(i+8);
 		// [kn.key, stepval, nudgeseed].postln;
 		q.nudge(stepval, nudgeseed);
 	}

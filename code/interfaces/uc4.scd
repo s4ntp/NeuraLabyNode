@@ -8,7 +8,8 @@ MKtl.all[\uc4].free;
 MKtl(\uc4, "*uc4_pg");
 
 q = q ? ();
-q.myseeds = 8.collect { 1000.rand }.postln;
+q.myseeds = q.myseeds ?? { 16.collect { 1000.rand } };
+
 // encoders to 64
 MKtl(\uc4).elAt(\pgKn1, \kn).deviceValue = 64;
 

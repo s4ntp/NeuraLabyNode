@@ -7,8 +7,7 @@ MKtl(\nanokontrol2, "*trol2");
 
 
 q = q ? ();
-q.knobseeds = 8.collect { 1000.rand }.postln;
-q.slseeds = 8.collect { 1000.rand }.postln;
+q.myseeds = q.myseeds ?? { 16.collect { 1000.rand } };
 
 MKtl(\nanokontrol2).elAt(\kn, 0).action_({ |kn|
 	var delta = (kn.value - kn.prevValue).clip2(0.07);
@@ -20,7 +19,7 @@ MKtl(\nanokontrol2).elAt(\kn, (1..7)).do { |kn, i|
 	kn.action = { |kn|
 		var nudgeval = ((kn.deviceValue - kn.prevDeviceValue)).clip2(5);
 		var stepval = nudgeval * 0.01;
-		var nudgeseed = q.knobseeds[i];
+		var nudgeseed = q.myseeds[i];
 		// [kn.key, stepval, nudgeseed].postln;
 		q.nudge(stepval, nudgeseed);
 	}
@@ -31,7 +30,7 @@ MKtl(\nanokontrol2).elAt(\sl).do { |sl, i|
 	sl.action = { |sl|
 		var nudgeval = ((sl.deviceValue - sl.prevDeviceValue)).clip2(5);
 		var stepval = nudgeval * 0.01;
-		var nudgeseed = q.slseeds[i];
+		var nudgeseed = q.myseeds[i + 8];
 		// [sl.key, stepval, nudgeseed].postln;
 		q.nudge(stepval, nudgeseed);
 	}
