@@ -46,8 +46,10 @@ MKtl(\beatstep).elAt(0, \pad, 9, \on)
 .action_({ q.preset.stepTarg(q.preset.settings.size.rand) })
 .elemDesc.label_("pre R ?");
 
-// all knobs except first nudge params relative up/down
-MKtl(\beatstep).elAt(0, \kn, (1..15)).do { |knob, i|
+
+
+// all knobs except top and bottom first nudge params relative up/down
+MKtl(\beatstep).elAt(0, \kn).do { |knob, i|
 	knob.deviceValue = 64;
 	knob.elemDesc.label = "nudge rd" + (i+1);
 	knob.action = { |knob|
