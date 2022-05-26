@@ -132,6 +132,7 @@ q.params = q.pchain.proxy.getKeysValues.flop[0];
 q.preset = NdefPreset(Ndef(\NeuraLaby), q.params);
 q.preset.loadSettings;
 
+"left, right, center settings:".postln;
 q.prekeys = q.preset.settings.collect(_.key).drop(1);
 q.preset.setCurr(q.prekeys.take(q.prekeys.choose).postln, false);
 q.preset.setTarg(q.prekeys.take(q.prekeys.choose).postln, false);
@@ -178,17 +179,12 @@ fork ({
 	0.5.wait;
 	q.pchain.remove(\freqMod);
 	0.5.wait;
-	// turn on input and limiter after gui, to force update
+	// turn on input and limiter after gui is made
+	// to force gui update / wet labels.
 	q.pchain.add(\freqMod, 1);
 	q.pchain.add(\ins, 1);
 	q.pchain.add(\limiter, 1);
 
+	// add lag to all params.
 	q.pchain.proxy.lag(*q.pchain.proxy.controlKeys.collect([_, 3]).flat);
 });
-
-/*
-q.pcg.editGui.paramGui.replaceKeys;
-Ndef('NeuraLaby').getSpec;
-*/
-
-
