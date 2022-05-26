@@ -9,6 +9,6 @@
 	\dependencies: [
 		"JITLibExtensions", "adclib", "Influx", "Modality-toolkit",
 		"Vowel", "KeyPlayer", "KtlLoop",
-		"StartupFile"
+		"StartupFile", "SpeakersCorner"
 	]
 )
