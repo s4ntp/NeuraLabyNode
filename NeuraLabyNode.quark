@@ -1,0 +1,14 @@
+(
+	\name: "NeuraLabyNode",
+	\path: "NeuraLabyNode",
+	\summary: "a node for the Neural Labyrinths installation.",
+	\author: "Alberto de Campo",
+	\version: 0.1,
+	\organization: "S4NTP",
+	\since: "2011",
+	\dependencies: [
+		"JITLibExtensions", "adclib", "Influx", "Modality-toolkit",
+		"Vowel", "KeyPlayer", "KtlLoop",
+		"StartupFile"
+	]
+)
