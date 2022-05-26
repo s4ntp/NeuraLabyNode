@@ -10,38 +10,80 @@ q.stetho = Stethoscope(s, 4, view: CompositeView(q.win, Rect(0, 220, 250, 250)))
 q.stetho.view.children.keep(4).do(_.visible_(false));
 q.stetho.xZoom = 0.1;
 
-q.mixerbut = Button(q.win, Rect(140, 44, 100, 40))
+
+q.butsize = 100@30;
+q.texsize = 100@36;
+
+q.guibutzone = CompositeView(q.win, Rect(130, 0, 110, 220)).background_(Color.grey(0.7));
+q.guibutzone.addFlowLayout(2@2, 1@1);
+
+StaticText(q.guibutzone, q.texsize).string_("More Guis:")
+.align_(\center).font_(q.font);
+
+q.mixerbut = Button(q.guibutzone, q.butsize)
 .states_([["mixer"]]).font_(q.font);
 q.mixerbut.action = {
-		q.mixer = NdefMixer.small(s, 8);
-		q.mixer.parent.name_(\NdefMixer);
-		ProxyMeter.addMixer(q.mixer);
+	q.mixer = NdefMixer.small(s, 8);
+	q.mixer.parent.name_(\NdefMixer);
+	ProxyMeter.addMixer(q.mixer);
 };
-q.mktlbut = Button(q.win, Rect(140, 86, 100, 40)) .states_([["interface"]]).font_(q.font);
+q.mktlbut = Button(q.guibutzone, q.butsize) .states_([["MKtl find"]]).font_(q.font);
+q.mktlbut.action = { MKtl.find };
+
+q.mktlbut = Button(q.guibutzone, q.butsize) .states_([["interface"]]).font_(q.font);
 q.mktlbut.action = { MKtl.all.do { |mk| mk.gui.showLabels } };
 
+///////
 
-q.butZone = CompositeView(q.win, Rect(250, 0, 104, 460)).background_(Color.grey(0.7));
-
+q.butZone = CompositeView(q.win, Rect(248, 0, 106, 460)).background_(Color.grey(0.7));
 q.butZone.addFlowLayout(2@2, 1@1);
 
-StaticText(q.butZone, 100@40).string_("FX Balance").font_(q.font).align_(\center);
+StaticText(q.butZone, q.texsize).string_("Presets:")
+.font_(q.font).align_(\center);
 
-q.drywetBut = Button(q.butZone, 100@40).states_([["less...MORE"]]).font_(q.font);
+Button(q.butZone, 50 @ q.butsize.y).font_(q.font)
+.states_([["- ? +"]])
+.mouseDownAction_({ |bt, x, y|
+	var step = x div: 16 - 1;
+	if (step == 0) { step = q.preset.settings.size.rand };
+	q.preset.stepCurr(step);
+});
+
+Button(q.butZone, 50 @ q.butsize.y).font_(q.font)
+.states_([["- ? +"]])
+.mouseDownAction_({ |bt, x, y|
+	var step = x div: 16 - 1;
+	if (step == 0) { step = q.preset.settings.size.rand };
+	q.preset.stepTarg(step);
+});
+
+Button(q.butZone, q.butsize).font_(q.font)
+.states_([["<< <-> >>"]])
+.mouseDownAction_({ |bt, x, y|
+	var step = (x / 50 - 1);
+	step = step * step.abs;
+	q.preset.morphValStep(q.preset.morphVal + step);
+});
+
+
+StaticText(q.butZone, q.texsize).string_("FX Balance:").font_(q.font).align_(\center);
+
+q.drywetBut = Button(q.butZone, q.butsize).states_([["less...MORE"]]).font_(q.font);
 q.drywetBut.mouseDownAction = { |b, x, y|
 	[b, x, y].postln;
 	q.stepDryWet(x-50 * 0.01);
 };
 
-q.randBut = Button(q.butZone, 100@40).states_([["vary...RAND"]]).font_(q.font);
+q.randBut = Button(q.butZone, q.butsize).states_([["vary...RAND"]]).font_(q.font);
 q.randBut.mouseDownAction = { |b, x, y|
 	// [b, x, y].postln;
 	NdefPreset(\NeuraLaby).setRand((x * 0.01).squared);
 };
 
-StaticText(q.butZone, 100@40).string_("< Nudges >").font_(q.font).align_(\center);
+StaticText(q.butZone, q.texsize).string_("Nudges:")
+.font_(q.font).align_(\center);
 (1..7).do { |num, i|
-	Button(q.butZone, 100@40)
+	Button(q.butZone, q.butsize)
 	.states_([["-- - % + ++".format(num)]])
 	.font_(q.font)
 	.mouseDownAction_({ |b, x, y|
@@ -58,22 +100,25 @@ q.nlwin.addFlowLayout;
 q.nlwin.asView.decorator.shift(25, 0);
 q.npg = NdefPresetGui(NdefPreset(\NeuraLaby), 0, q.nlwin);
 q.pcg = q.pchain.gui(22,
-	[
-		[\LessFX, \extra, { q.stepDryWet(-0.05) } ],
-		[\MoreFX, \extra, { q.stepDryWet(0.05) } ],
-		[ \ins, \slotCtl ],
-		[ \freqMod, \slotCtl ],
-		[ \ampMod, \slotCtl ],
-		[ \hiPass, \slotCtl ],
-		[ \gapz, \slotCtl ],
-		[ \limiter, \slotCtl ];
-	],
-	q.nlwin
+	// [
+	// 	[\LessFX, \extra, { q.stepDryWet(-0.05) } ],
+	// 	[\MoreFX, \extra, { q.stepDryWet(0.05) } ],
+	// 	[ \ins, \slotCtl ],
+	// 	[ \freqMod, \slotCtl ],
+	// 	[ \ampMod, \slotCtl ],
+	// 	[ \hiPass, \slotCtl ],
+	// 	[ \gapz, \slotCtl ],
+	// 	[ \limiter, \slotCtl ];
+	// ],
+	parent: q.nlwin
 );
 q.pcg.butZone.bounds = q.pcg.butZone.bounds.width_(70);
 q.pcg.buttons.do { |bt| bt.bounds = bt.bounds.width_(60) };
-// disable all on/off buttons?
-q.pcg.buttons.copyRange(2, 7).do(_.enabled_(false));
+
+///// for installation mode:
+///// disable all on/off buttons:
+// q.pcg.buttons.do(_.enabled_(false));
+//// disable sto, del, edit, doc
 
 // editGui shows levels
 ProxyMeter.addNdefGui(q.pcg.editGui);
