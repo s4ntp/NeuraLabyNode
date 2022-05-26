@@ -212,6 +212,8 @@ fork ({
 	q.pchain.add(\freqMod, 1);
 	q.pchain.add(\ins, 1);
 	q.pchain.add(\limiter, 1);
+
+	q.pchain.proxy.lag(*q.pchain.proxy.controlKeys.collect([_, 3]).flat);
 });
 
 /*
