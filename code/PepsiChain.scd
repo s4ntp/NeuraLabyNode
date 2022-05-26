@@ -113,7 +113,6 @@ ProxyChain.add3(\limiter, \filter -> { |in, drive = 3, maxLevel = 0.2|
 
 // instancing
 
-
 q.pcSlots = [\ins, \freqMod, \ampMod, \hiPass, \gapz, \limiter ];
 
 q.pchain.do(_.free);
@@ -132,6 +131,10 @@ q.pchain.do { |pc, i|
 q.params = q.pchain.proxy.getKeysValues.flop[0];
 q.preset = NdefPreset(Ndef(\NeuraLaby), q.params);
 q.preset.loadSettings;
+
+q.preset.setCurr(q.preset.settings.collect(_.key).choose);
+q.preset.setTarg(q.preset.settings.collect(_.key).choose, false);
+q.preset.setProxy(q.preset.currSet.key);
 
 q.nudge = { |q, step = 0.1, seed = 4711|
 	fork {
@@ -168,41 +171,6 @@ q.stepDryWet = { |q, step = 0.1|
 q.stepDryWet(0.1);
 q.stepDryWet(-0.1);
 */
-
-// (
-// q.nlwin = Window('NeuraLaby', Rect(350,0,450,460)).front;
-// q.nlwin.addFlowLayout;
-// q.nlwin.view.decorator.shift(25, 0);
-// q.npg = NdefPresetGui(NdefPreset(\NeuraLaby), 0, q.nlwin);
-// q.pcg = q.pchain.gui(22,
-// 	[
-// 		[\LessFX, \extra, { q.stepDryWet(-0.05) } ],
-// 		[\MoreFX, \extra, { q.stepDryWet(0.05) } ],
-// 		[ \ins, \slotCtl ],
-// 		[ \freqMod, \slotCtl ],
-// 		[ \ampMod, \slotCtl ],
-// 		[ \hiPass, \slotCtl ],
-// 		[ \gapz, \slotCtl ],
-// 		[ \limiter, \slotCtl ];
-// 	],
-// 	q.nlwin
-// );
-// q.pcg.butZone.bounds = q.pcg.butZone.bounds.width_(70);
-// q.pcg.buttons.do { |bt| bt.bounds = bt.bounds.width_(60) };
-// // disable all on/off buttons?
-// q.pcg.buttons.copyRange(2, 7).do(_.enabled_(false));
-//
-// // editGui shows levels
-// ProxyMeter.addNdefGui(q.pcg.editGui);
-// // make it smaller
-// q.pcg.editGui.zone.bounds_(q.pcg.editGui.zone.bounds.moveBy(-40, 0));
-// // make nameView more visible
-// q.pcg.editGui.nameView
-// .background_(Color.blue).stringColor_(Color.white)
-// .font_(Font(Font.defaultSansFace, 13));
-// );
-
-// q.pchain.remove(\freqMod);
 
 fork ({
 	0.5.wait;
