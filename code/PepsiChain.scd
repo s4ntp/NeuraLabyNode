@@ -132,9 +132,11 @@ q.params = q.pchain.proxy.getKeysValues.flop[0];
 q.preset = NdefPreset(Ndef(\NeuraLaby), q.params);
 q.preset.loadSettings;
 
-q.preset.setCurr(q.preset.settings.collect(_.key).choose);
-q.preset.setTarg(q.preset.settings.collect(_.key).choose, false);
-q.preset.setProxy(q.preset.currSet.key);
+q.prekeys = q.preset.settings.collect(_.key).drop(1);
+q.preset.setCurr(q.prekeys.take(q.prekeys.choose).postln, false);
+q.preset.setTarg(q.prekeys.take(q.prekeys.choose).postln, false);
+q.preset.setProxy(q.prekeys.take(q.prekeys.choose).postln);
+q.preset.morphVal_(0.5);
 
 q.nudge = { |q, step = 0.1, seed = 4711|
 	fork {
