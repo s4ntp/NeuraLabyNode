@@ -20,6 +20,10 @@ q.guibutzone.addFlowLayout(2@2, 1@1);
 StaticText(q.guibutzone, q.texsize).string_("More Guis:")
 .align_(\center).font_(q.font);
 
+q.autoBut = Button(q.guibutzone, q.butsize)
+.states_([["autoMutate"]]).font_(q.font)
+.action = { Tdef(\autoMutate).gui };
+
 q.mixerbut = Button(q.guibutzone, q.butsize)
 .states_([["mixer"]]).font_(q.font);
 q.mixerbut.action = {
@@ -64,7 +68,6 @@ Button(q.butZone, q.butsize).font_(q.font)
 	step = step * step.abs;
 	q.preset.morphValStep(q.preset.morphVal + step);
 });
-
 
 StaticText(q.butZone, q.texsize).string_("FX Balance:").font_(q.font).align_(\center);
 

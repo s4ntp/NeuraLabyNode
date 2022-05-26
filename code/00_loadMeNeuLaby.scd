@@ -35,6 +35,8 @@ s.waitForBoot {
 
 	0.2.wait;
 
+	"autoMutate.scd".postln.loadRelative;
+
 	// all GUI stuff here:
 	// always load the RaspiGui
 	"RaspiGui.scd".postln.loadRelative;
