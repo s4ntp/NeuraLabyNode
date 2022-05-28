@@ -18,9 +18,9 @@ Spec.add(\midGain, [-24, 24]);
 	Ndef(name, {
 		var snd = SoundIn.ar(index);
 		var amp = \gain.kr(1, 0.5);
-		var pan = \pan.kr([-1, 1].wrapAt(index) * rrand(0.4, 1.0), 0.5);
-		snd = BHiShelf.ar(snd, 5000, 1, \treble.kr(-6, 0.5));
-		snd = BLowShelf.ar(snd, 200, 1, \bass.kr(6, 0.5));
+		var pan = \pan.kr([-1, 1].wrapAt(index), 0.5);
+		snd = BHiShelf.ar(snd, 5000, 1, \treble.kr(0, 0.5));
+		snd = BLowShelf.ar(snd, 200, 1, \bass.kr(0, 0.5));
 		snd = BPeakEQ.ar(snd,
 			\midFreq.kr(1000, 0.5),
 			\midWidth.kr(1, 0.5),
@@ -29,8 +29,8 @@ Spec.add(\midGain, [-24, 24]);
 	});
 };
 
-Ndef(\RawIns, {
-	~inNdefs.sum { |ndef|
-		 ndef.ar * ndef.key.kr(0.5, 0.5)
-	}
+Spec.add(\balance, \pan);
+Ndef(\RawIns, { |balance = 0|
+	var mix = ~inNdefs.sum { |ndef| ndef.ar * ndef.key.kr(1, 0.5) };
+	Balance2.ar(mix[0], mix[1], balance)
 });
