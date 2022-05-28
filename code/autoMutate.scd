@@ -78,7 +78,7 @@ MFdef(\mutaTest).add(\tooLoud, {
 });
 
 MFdef(\mutaTest).add(\tooEven, {
-	var add2muta = q.lastAmps.stdDev.explin(0.2, 10, 0.1, 0);
+	var add2muta = q.lastAmps.stdDev.explin(0.2, 6, 0.1, 0);
 	q.mutaSum = q.mutaSum + add2muta;
 	if (add2muta > 0.02 and: 0.1.coin) {
 		"tooEven: %\n".postf(add2muta.round(0.001))
