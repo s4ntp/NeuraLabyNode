@@ -1,6 +1,4 @@
 (
-q.myseeds = 8.collect { 1000.rand };
-
 try { q.win.close };
 
 q.font = Font(Font.defaultMonoFace, 14);
@@ -11,7 +9,7 @@ q.stetho.view.children.keep(4).do(_.visible_(false));
 q.stetho.xZoom = 0.1;
 
 
-q.butsize = 100@30;
+q.butsize = 100@25;
 q.texsize = 100@36;
 
 q.guibutzone = CompositeView(q.win, Rect(130, 0, 110, 220)).background_(Color.grey(0.7));
@@ -69,9 +67,19 @@ Button(q.butZone, q.butsize).font_(q.font)
 	q.preset.morphValStep(q.preset.morphVal + step);
 });
 
-StaticText(q.butZone, q.texsize).string_("FX Balance:").font_(q.font).align_(\center);
+StaticText(q.butZone, q.texsize).string_("Balance:")
+.font_(q.font).align_(\center);
 
-q.drywetBut = Button(q.butZone, q.butsize).states_([["less...MORE"]]).font_(q.font);
+
+// make a JITView: value, parent, bounds
+m = MView(0.5, q.butZone, Rect(0, 0, 100, 25));
+// needs a spec to display proper number range
+m.putDict(\myspec, \pan).refresh;
+m.label_('Spk<-->Obj');
+
+
+q.drywetBut = Button(q.butZone, q.butsize).states_([["dry <-> FX"]])
+.font_(q.font);
 q.drywetBut.mouseDownAction = { |b, x, y|
 	[b, x, y].postln;
 	q.stepDryWet(x-50 * 0.01);
