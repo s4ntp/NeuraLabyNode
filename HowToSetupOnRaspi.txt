@@ -1,0 +1,37 @@
+// Setting up a Raspi as a node for Neural Labyrinths
+
+1. with Raspberry Pi Imager, make an SD with
+	Raspian Buster or patchbox image,
+	and desired hostname, known networks etc
+
+2. install SC by redfriks package:
+"https://github.com/redFrik/supercolliderStandaloneRPI2".openOS;
+... and follow instructions ...
+
+3. install NeuraLabyNode quark.
+This installes all other needed quarks.
+Quarks.install("https://github.com/s4ntp/NeuraLabyNode");
+
+4. check which are there now:
+Quarks.installed.collect(_.name);
+// update if needed
+Quarks.installed.do(_.update);
+
+// recompile ... then
+StartupFile.writeStartupFileToExternalPath('neuraLabyQuark',
+ (Quark("NeuraLabyNode").localPath +/+ "code/00_loadMeNeuLaby.scd")
+);
+
+// should be true:
+StartupFile.pathsDict.keys.includes('neuraLabyQuark');
+// write startup.scd that points to neuraLabyQuark:
+StartupFile.writeRedirectFile('neuraLabyQuark')
+
+// connect audio interface, recommended: Behringer Xenyx 802 USB
+// optionally connect supported midi controller, one of:
+// akai LPD8, Arturia Beatstep, Korg nanoKontrol2,
+// Behringer xtouch mini, FaderFox UC4
+
+/// reboot interpreter ....
+/// if the server boots and you get a GUI window that says NeuralLabyrinths:
+// DONE! //
