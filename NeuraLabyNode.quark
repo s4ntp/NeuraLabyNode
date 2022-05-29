@@ -5,10 +5,11 @@
 	\author: "Alberto de Campo",
 	\version: 0.1,
 	\organization: "S4NTP",
-	\since: "2011",
+	\since: "2022",
 	\dependencies: [
 		"JITLibExtensions", "adclib", "Influx", "Modality-toolkit",
 		"Vowel", "KeyPlayer", "KtlLoop",
-		"StartupFile", "SpeakersCorner"
+		"StartupFile",
+		"SpeakersCorner", "MathLib"
 	]
 )
