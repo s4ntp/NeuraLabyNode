@@ -72,11 +72,20 @@ StaticText(q.butZone, q.texsize).string_("Balance:")
 
 
 // make a JITView: value, parent, bounds
-m = MView(0.5, q.butZone, Rect(0, 0, 100, 25));
+q.balgui = MView(0.5, q.butZone, Rect(0, 0, 100, 25));
 // needs a spec to display proper number range
-m.putDict(\myspec, \pan).refresh;
-m.label_('Spk<-->Obj');
+q.balgui.putDict(\myspec, \pan).refresh;
+q.balgui.label_('Spk<-->Obj');
+q.balskip.stop.free;
+q.balskip = SkipJack({
+	var balval = Ndef(\RawIns).get(\balance);
+	if (q.balgui.value != balval) {
+		q.balgui.value = balval
+	};
+}, 0.2);
 
+q.balgui.drawFunc.disable(\code)
+q.balgui.drawFunc.enable(\number)
 
 q.drywetBut = Button(q.butZone, q.butsize).states_([["dry <-> FX"]])
 .font_(q.font);
