@@ -84,8 +84,8 @@ q.balskip = SkipJack({
 	};
 }, 0.2);
 
-q.balgui.drawFunc.disable(\code)
-q.balgui.drawFunc.enable(\number)
+q.balgui.drawFunc.disable(\code);
+q.balgui.drawFunc.enable(\number);
 
 q.drywetBut = Button(q.butZone, q.butsize).states_([["dry <-> FX"]])
 .font_(q.font);
