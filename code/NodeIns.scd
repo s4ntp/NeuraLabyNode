@@ -30,7 +30,11 @@ Spec.add(\midGain, [-24, 24]);
 };
 
 Spec.add(\balance, \pan);
-Ndef(\RawIns, { |balance = 0|
+Spec.add(\delay, [0, 5, 3]);
+
+Ndef(\RawIns, { |balance = 0, delay = 0|
 	var mix = ~inNdefs.sum { |ndef| ndef.ar * ndef.key.kr(1, 0.5) };
-	Balance2.ar(mix[0], mix[1], balance)
+	mix = DelayN.ar(mix, 5, delay);
+	Balance2.ar(mix[0], mix[1], balance);
 });
+
