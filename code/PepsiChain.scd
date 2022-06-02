@@ -140,6 +140,14 @@ q.pchain = ProxyChain.from(Ndef(\NeuraLaby), q.pcSlots).play;
 
 Ndef(\NeuraLaby).fadeTime = 10;
 
+
+// better use linear mappings for drywet FX controls:
+Ndef(\NeuraLaby).addSpec(\wet20, [0, 1, 0]);
+Ndef(\NeuraLaby).addSpec(\wet30, [0, 1, 0]);
+Ndef(\NeuraLaby).addSpec(\wet40, [0, 1, 0]);
+Ndef(\NeuraLaby).addSpec(\wet50, [0, 1, 0]);
+
+
 // turn on the FX that can be nudged
 q.pchain.do { |pc, i|
 	pc.add(\freqMod, 1);
