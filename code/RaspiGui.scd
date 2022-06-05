@@ -1,8 +1,16 @@
 (
+WinBounds.addMake(\Mixer, {
+	q.mixer = NdefMixer.small(s, 8);
+	q.mixer.parent.name_(\Mixer);
+	ProxyMeter.addMixer(q.mixer);
+	// return window for WinBounds:
+	q.mixer.parent;
+});
+
 try { q.win.close };
 
 q.font = Font(Font.defaultMonoFace, 14);
-q.win = Window("Neural Labyrinths 2022 ... made in Berl¡n", 800@460).front;
+q.win = Window("Neural Labyrinths 2022 ... made in Berl¡n", 800@455).front;
 q.meter = ServerMeterView(s, q.win, 0@0, 2, 2);
 q.stetho = Stethoscope(s, 4, view: CompositeView(q.win, Rect(0, 220, 250, 250)));
 q.stetho.view.children.keep(4).do(_.visible_(false));
@@ -19,16 +27,26 @@ StaticText(q.guibutzone, q.texsize).string_("More Guis:")
 .align_(\center).font_(q.font);
 
 q.autoBut = Button(q.guibutzone, q.butsize)
-.states_([["autoMutate"]]).font_(q.font)
-.action = { Tdef(\autoMutate).gui };
+.states_([["autoMutate?"],
+	["autoMutate!", Color.black, Color.green]
+]).font_(q.font);
+q.autoBut.action = nil;
+q.autoBut.mouseDownAction = { |bt, x, y, mod|
+	var tdef = Tdef(\autoMutate);
+	if (x >= 90) {
+		tdef.gui;
+	} {
+		if (tdef.isPlaying.not)
+		{ tdef.play }
+		{ tdef.stop }
+	};
+	defer ({ bt.value = tdef.isPlaying.not.binaryValue }, 0.05);
+};
 
 q.mixerbut = Button(q.guibutzone, q.butsize)
-.states_([["mixer"]]).font_(q.font);
-q.mixerbut.action = {
-	q.mixer = NdefMixer.small(s, 8);
-	q.mixer.parent.name_(\NdefMixer);
-	ProxyMeter.addMixer(q.mixer);
-};
+.states_([["Mixer"]]).font_(q.font);
+q.mixerbut.action = { WinBounds.showOrMake(\Mixer) };
+
 q.mktlbut = Button(q.guibutzone, q.butsize) .states_([["MKtl find"]]).font_(q.font);
 q.mktlbut.action = { MKtl.find };
 
@@ -79,8 +97,12 @@ q.balgui.label_('Spk<-->Obj');
 q.balskip.stop.free;
 q.balskip = SkipJack({
 	var balval = Ndef(\RawIns).get(\balance);
+	var autoval = Tdef(\autoMutate).isPlaying;
 	if (q.balgui.value != balval) {
 		q.balgui.value = balval
+	};
+	if (q.autoBut.value != autoval) {
+		q.autoBut.value = autoval
 	};
 }, 0.2);
 
