@@ -15,3 +15,4 @@ make startup files for each one
 NeuralLaby node:
 finds supported MKtl devices
 select audio hardware with shell: alsamixer, F2 cards
+
