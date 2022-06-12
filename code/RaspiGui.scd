@@ -1,3 +1,7 @@
+/*
+q.testRaspiScreen
+*/
+
 (
 WinBounds.addMake(\Mixer, {
 	q.mixer = NdefMixer.small(s, 8);
@@ -10,11 +14,21 @@ WinBounds.addMake(\Mixer, {
 try { q.win.close };
 
 q.font = Font(Font.defaultMonoFace, 14);
-q.win = Window("Neural Labyrinths 2022 ... made in Berl¡n", 800@455).front;
+q.win = Window("Neural Labyrinths 2022 ... made in Berl¡n", 795@455).front;
 q.meter = ServerMeterView(s, q.win, 0@0, 2, 2);
 q.stetho = Stethoscope(s, 4, view: CompositeView(q.win, Rect(0, 220, 250, 250)));
 q.stetho.view.children.keep(4).do(_.visible_(false));
 q.stetho.xZoom = 0.1;
+
+q.testRaspiScreen = {
+	~raspibounds = Rect(0, 0, 797, 439);
+
+	"windows outside raspi bounds:".postln;
+	Window.allWindows.select { |win|
+		~raspibounds.contains(win.bounds).not
+	}.collect { |win| [win.name, win.bounds] }.printAll;
+	"";
+};
 
 
 q.butsize = 100@25;
@@ -50,12 +64,12 @@ q.mixerbut.action = { WinBounds.showOrMake(\Mixer) };
 q.mktlbut = Button(q.guibutzone, q.butsize) .states_([["MKtl find"]]).font_(q.font);
 q.mktlbut.action = { MKtl.find };
 
-q.mktlbut = Button(q.guibutzone, q.butsize) .states_([["interface"]]).font_(q.font);
+q.mktlbut = Button(q.guibutzone, q.butsize) .states_([["interfaces"]]).font_(q.font);
 q.mktlbut.action = { MKtl.all.do { |mk| mk.gui.showLabels } };
 
 ///////
 
-q.butZone = CompositeView(q.win, Rect(248, 0, 106, 460)).background_(Color.grey(0.7));
+q.butZone = CompositeView(q.win, Rect(248, 0, 106, 440)).background_(Color.grey(0.7));
 q.butZone.addFlowLayout(2@2, 1@1);
 
 StaticText(q.butZone, q.texsize).string_("Presets:")
@@ -94,6 +108,8 @@ q.balgui = MView(0.5, q.butZone, Rect(0, 0, 100, 25));
 // needs a spec to display proper number range
 q.balgui.putDict(\myspec, \pan).refresh;
 q.balgui.label_('Spk<-->Obj');
+q.balgui.action.add(\set, { |sl| Ndef(\RawIns).set(\balance, sl.value) });
+
 q.balskip.stop.free;
 q.balskip = SkipJack({
 	var balval = Ndef(\RawIns).get(\balance);
@@ -142,16 +158,6 @@ q.nlwin.addFlowLayout;
 q.nlwin.asView.decorator.shift(25, 0);
 q.npg = NdefPresetGui(NdefPreset(\NeuraLaby), 0, q.nlwin);
 q.pcg = q.pchain.gui(22,
-	// [
-	// 	[\LessFX, \extra, { q.stepDryWet(-0.05) } ],
-	// 	[\MoreFX, \extra, { q.stepDryWet(0.05) } ],
-	// 	[ \ins, \slotCtl ],
-	// 	[ \freqMod, \slotCtl ],
-	// 	[ \ampMod, \slotCtl ],
-	// 	[ \hiPass, \slotCtl ],
-	// 	[ \gapz, \slotCtl ],
-	// 	[ \limiter, \slotCtl ];
-	// ],
 	parent: q.nlwin
 );
 q.pcg.butZone.bounds = q.pcg.butZone.bounds.width_(70);
