@@ -28,3 +28,14 @@ MKtl(\uc4).elAt(\pgKn1, \kn, (1..7)).do { |enc, i|
 	}
 };
 
+// // use knobs for relative control
+MKtl(\uc4).elAt(\pgSl1, \sl, (0..7)).do { |enc, i|
+	enc.elemDesc.label = "nudge rd" + (i+1);
+	enc.action = { |sl|
+		var diff = (sl.deviceValue - sl.prevDeviceValue).clip2(5);
+		var step = (diff * 0.005);
+		q.nudge(step, q.myseeds[i]);
+		// defer ({ sl.deviceValue = 64 }, 0.02);
+	}
+};
+
