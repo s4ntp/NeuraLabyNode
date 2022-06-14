@@ -39,3 +39,12 @@ MKtl(\uc4).elAt(\pgSl1, \sl, (0..7)).do { |enc, i|
 	}
 };
 
+// // use knobs for relative control
+MKtl(\uc4).elAt('xfader').do { |fad|
+	fad.elemDesc.label = "spk< >obj";
+	fad.action = { |fad|
+		Ndef(\RawIns).softSet(\balance, fad.value,
+			0.05, lastVal: fad.prevValue);
+	}
+};
+
