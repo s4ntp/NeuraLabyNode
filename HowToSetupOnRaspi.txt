@@ -1,12 +1,17 @@
 // Setting up a Raspi as a node for Neural Labyrinths
 
 1. with Raspberry Pi Imager, make an SD with
-	Raspian Buster or patchbox image,
+	current patchbox image,
 	and desired hostname, known networks etc
 
-2. install SC by redfriks package:
-"https://github.com/redFrik/supercolliderStandaloneRPI2".openOS;
-... and follow instructions ...
+// In Terminal - get midi to work: 
+systemctl stop amidiauto
+systemctl disable amidiauto
+// In Terminal - enable hid for gamepads: 
+sudo chmod 664 /dev/hidraw*
+sudo chgrp plugdev /dev/hidraw*
+
+2. Start SuperCollider
 
 3. install NeuraLabyNode quark.
 This installes all other needed quarks.
@@ -16,6 +21,7 @@ Quarks.install("https://github.com/s4ntp/NeuraLabyNode");
 Quarks.installed.collect(_.name);
 // update if needed
 Quarks.installed.do(_.update);
+
 
 // recompile ... then
 StartupFile.writeStartupFileToExternalPath('neuraLabyQuark',
