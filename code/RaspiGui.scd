@@ -20,6 +20,15 @@ q.stetho = Stethoscope(s, 4, view: CompositeView(q.win, Rect(0, 220, 250, 250)))
 q.stetho.view.children.keep(4).do(_.visible_(false));
 q.stetho.xZoom = 0.1;
 
+q.uv = UserView(q.win, q.stetho.view.bounds.moveTo(0, 220).width_(200));
+q.uv.background_(Color.blue(1, 0));
+
+q.uv.drawFunc = {
+	Pen.stringCenteredIn("Out_Spk\n\n\nOut_Obj\n\n\nIn_Mic\n\n\nIn_Obj\n", q.uv.bounds.moveTo(0, 0), q.font.copy.size_(16), Color(0.62, 0.62, 1.0));
+};
+q.win.refresh;
+
+q.stetho.view.visible = true;
 q.testRaspiScreen = {
 	~raspibounds = Rect(0, 0, 797, 439);
 
