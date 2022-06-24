@@ -38,18 +38,18 @@ ProxyChain.add3(\ins, {
 ///// Mumma1: freq shift mod, with envelope following
 (
 ProxyChain.add3(\freqMod, \filter -> { |in, carrFreq=5000, filtRatio=1, freqShift=30|
-	var snd, freq2;
+
 	carrFreq = carrFreq.lag(Ndef(\lag));
 	freqShift = freqShift.lag(Ndef(\lag));
-	freq2 = carrFreq + freqShift;
-
-	snd = in.asArray.mean * SinOsc.ar(carrFreq, [0, pi/2]);
-	snd = LPF.ar(snd,
-		(carrFreq * filtRatio.lag(Ndef(\lag)))
-		.clip(20, (s.sampleRate * 0.45) - carrFreq)
-	);
-	snd = snd * SinOsc.ar(freq2, [0, pi/2]);
-	snd.sum;
+	in.collect { |chan|
+		var snd = chan * SinOsc.ar(carrFreq, [0, pi/2]);
+		snd = LPF.ar(snd,
+			(carrFreq * filtRatio.lag(Ndef(\lag)))
+			.clip(20, (s.sampleRate * 0.45) - carrFreq)
+		);
+		snd = snd * SinOsc.ar(carrFreq + freqShift, [0, pi/2]);
+		snd.sum
+	}
 }, 1, (
 	carrFreq: [200, 6000, \exp],
 	filtRatio: [1, 10, \exp],
