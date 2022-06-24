@@ -73,14 +73,39 @@ ProxyChain.add3(\ampMod, \filter -> { |in, amFreq = 16, amWidth = 0.5, amRateMod
 	modOsc = modOsc.clip(0, 1);
 	snd * modOsc;
 
+	}, 1, (
+		// specs go here:
+		\amFreq: [0.1, 1000, \exp, 0.1],
+		\amWidth: [0, 4, \amp],
+		\amRateMod: [-1, 1],
+	)
+)
+);
+
+// improved with mod positive = full ringmod, mod negative is pulsing
+
+ProxyChain.add3(\ampMod2, \filter -> { |in, amFreq = 16, amWidth = 0.5, amRateMod = 0.5|
+	var snd = in;
+	var lag = Ndef(\lag).kr[0];
+	var envel = Amplitude.kr(snd, 0.01, 0.5);
+	var envmod = (48 * envel * amRateMod.lag(Ndef(\lag))).midiratio;
+	var modOsc = SinOsc.ar(amFreq.lag(Ndef(\lag)) * envmod);
+	var mod = amWidth.lag(lag);
+
+	var modRing = mod.clip(0, 1) * -2 + 1;
+	var modAM = (mod.clip(-1, 0) * 3 + 1) ** 2;
+	var ringSnd = in * modOsc.range(modRing, 1);
+
+	var amSnd = in * (modOsc * modAM).clip(0, 1);
+	ringSnd * modOsc.range(modAM, 1).max(0);
 }, 1, (
 	// specs go here:
 	\amFreq: [0.1, 1000, \exp, 0.1],
-	\amWidth: [0, 4, \amp],
+	\amWidth: \pan,
 	\amRateMod: [-1, 1],
-)
-)
+	)
 );
+
 
 (
 ProxyChain.add3(\hiPass, \filter -> { |in,
@@ -95,11 +120,46 @@ ProxyChain.add3(\hiPass, \filter -> { |in,
 	// specs go here:
 	\hpFreq: [20, 2000, \exp, 0.1],
 	\hpWidth: [0, 1],
-	\hpRate: [0.1,2000, \exp],
+	\hpRate: [0.1, 2000, \exp],
 	hpRateMod: [-1, 1],
 )
 )
 );
+
+////// not working yet: big DJ filta that
+////// goes from closing LPF to HPF
+// (
+// ProxyChain.add3(\filta, \filter -> { |in,
+// 	balance = 0,
+// 	// curve = 1, reso = 5,
+// 	flWidth = 0.5, flRate = 3, flRateMod = 0.5|
+// 	var lag = Ndef(\lag).kr[0];
+// 	var curve = 1;
+// 	var reso = 1;
+//
+// 	var envel = Amplitude.kr(in, 0.01, 0.5);
+// 	var envmod = (48 * envel * flRateMod.lag(lag)).midiratio; // +- 4 octaves max
+// 	var modOsc = SinOsc.ar(flRate.lag(lag) * envmod);
+// 	var freqmod = (modOsc * flWidth.lag(lag) * 0.5);
+//
+// 	var rq = (1/reso).clip(0.05, 1);
+// 	var freqctl = (balance + freqmod ** curve).poll;
+// 	var lpfreq = freqctl.linexp(-1, 0, 100, 20000);
+// 	var hpfreq = freqctl.linexp(0, 1, 20, 4000);
+//
+// 	RHPF.ar(RLPF.ar(in, lpfreq, rq), hpfreq, rq);
+// 	}, 1, (
+// 		// specs go here:
+// 		balance: \pan,
+// 		curve: \pan,
+// 		reso: [1, 11],
+// 		flWidth: [0, 1],
+// 		flRate: [0.1,200, \exp],
+// 		flRateMod: [-1, 1]
+// 	)
+// )
+// );
+
 
 ProxyChain.add3(\gapz, \filter -> { |in,
 	probkeep = 0.5, mindur = 0.02|
