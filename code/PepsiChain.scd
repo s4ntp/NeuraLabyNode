@@ -206,7 +206,7 @@ Ndef(\NeuraLaby).fadeTime = 10;
 q.pchain.do { |pc, i|
 	pc.add(\freqMod, 1);
 	pc.add(\ampMod, 1);
-	pc.add(\hiPass, 1);
+	pc.add(\filta, 1);
 	pc.add(\gapz, 1);
 };
 

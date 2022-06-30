@@ -41,7 +41,10 @@ s.waitForBoot {
 	"autoMutate.scd".postln.loadRelative;
 
 	0.2.wait;
-
+	if ("~/Desktop/adjustments.scd".pathMatch.isEmpty) {
+		unixCmd("cp" + (thisProcess.nowExecutingPath.dirname.dirname
+			+/+ "adjustments.scd").quote + "~/Desktop/adjustments.scd");
+	};
 	"~/Desktop/adjustments.scd".loadPaths;
 
 	/* all GUI stuff is here:
