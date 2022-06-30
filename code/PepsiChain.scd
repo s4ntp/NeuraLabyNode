@@ -73,12 +73,12 @@ ProxyChain.add3(\ampMod, \filter -> { |in, amFreq = 16, amWidth = 0.5, amRateMod
 	modOsc = modOsc.clip(0, 1);
 	snd * modOsc;
 
-	}, 1, (
-		// specs go here:
-		\amFreq: [0.1, 1000, \exp, 0.1],
-		\amWidth: [0, 4, \amp],
-		\amRateMod: [-1, 1],
-	)
+}, 1, (
+	// specs go here:
+	\amFreq: [0.1, 1000, \exp, 0.1],
+	\amWidth: [0, 4, \amp],
+	\amRateMod: [-1, 1],
+)
 )
 );
 
@@ -103,7 +103,7 @@ ProxyChain.add3(\ampMod2, \filter -> { |in, amFreq = 16, amWidth = 0.5, amRateMo
 	\amFreq: [0.1, 1000, \exp, 0.1],
 	\amWidth: \pan,
 	\amRateMod: [-1, 1],
-	)
+)
 );
 
 
@@ -126,39 +126,41 @@ ProxyChain.add3(\hiPass, \filter -> { |in,
 )
 );
 
-////// not working yet: big DJ filta that
-////// goes from closing LPF to HPF
-// (
-// ProxyChain.add3(\filta, \filter -> { |in,
-// 	balance = 0,
-// 	// curve = 1, reso = 5,
-// 	flWidth = 0.5, flRate = 3, flRateMod = 0.5|
-// 	var lag = Ndef(\lag).kr[0];
-// 	var curve = 1;
-// 	var reso = 1;
-//
-// 	var envel = Amplitude.kr(in, 0.01, 0.5);
-// 	var envmod = (48 * envel * flRateMod.lag(lag)).midiratio; // +- 4 octaves max
-// 	var modOsc = SinOsc.ar(flRate.lag(lag) * envmod);
-// 	var freqmod = (modOsc * flWidth.lag(lag) * 0.5);
-//
-// 	var rq = (1/reso).clip(0.05, 1);
-// 	var freqctl = (balance + freqmod ** curve).poll;
-// 	var lpfreq = freqctl.linexp(-1, 0, 100, 20000);
-// 	var hpfreq = freqctl.linexp(0, 1, 20, 4000);
-//
-// 	RHPF.ar(RLPF.ar(in, lpfreq, rq), hpfreq, rq);
-// 	}, 1, (
-// 		// specs go here:
-// 		balance: \pan,
-// 		curve: \pan,
-// 		reso: [1, 11],
-// 		flWidth: [0, 1],
-// 		flRate: [0.1,200, \exp],
-// 		flRateMod: [-1, 1]
-// 	)
-// )
-// );
+//// big DJ filta that
+//// goes from closing LPF to HPF
+(
+ProxyChain.add3(\filta, \filter -> { |in,
+	balance = 0,
+	// curve = 1, reso = 5,
+	flWidth = 0.5, flRate = 3, flRateMod = 0.5|
+	var lag = Ndef(\lag).kr[0];
+	var curve = 1;
+
+	var in2 = in;// + (PinkNoise.ar * 0.5);
+
+	var envel = Amplitude.kr(in, 0.01, 0.5);
+	var envmod = (24 * envel * flRateMod.lag(lag)).midiratio; // +-2 octaves max
+	var modOsc = SinOsc.ar(flRate.lag(lag) * envmod);
+	var freqmod = (modOsc * flWidth.lag(lag) * 0.5);
+
+	var freqctl = (balance + freqmod ** curve);
+	var lpfreq = freqctl.linexp(-1, 0, 100, 20000);
+	var hpfreq = freqctl.linexp(0, 1, 20, 4000);
+
+	RHPF.ar(RLPF.ar(in2, lpfreq, 0.7), hpfreq, 0.7);
+},
+1,
+(
+// specs go here:
+balance: \pan,
+curve: \pan,
+reso: [1, 11],
+flWidth: [-1, 1],
+flRate: [0.1,200, \exp],
+flRateMod: [-1, 1]
+)
+)
+);
 
 
 ProxyChain.add3(\gapz, \filter -> { |in,
@@ -193,7 +195,7 @@ ProxyChain.add3(\limiter, \filter -> { |in,
 // making
 ///// tanh moved into limiter to save one GUI line
 
-q.pcSlots = [\ins, \freqMod, \ampMod, \hiPass, \gapz, \limiter ];
+q.pcSlots = [\ins, \freqMod, \ampMod, \filta, \gapz, \limiter ];
 
 q.pchain.free;
 q.pchain = ProxyChain.from(Ndef(\NeuraLaby), q.pcSlots).play;
@@ -225,14 +227,14 @@ q.params = q.pchain.proxy.getKeysValues.flop[0].reject(_ == \lag);
 q.params.printcsAll;
 
 q.preset = NdefPreset(Ndef(\NeuraLaby), q.params);
-q.preset.loadSettings;
+// q.preset.loadSettings;
 
-"left, right, center settings:".postln;
-q.prekeys = q.preset.settings.collect(_.key).drop(1);
-q.preset.setCurr(q.prekeys.take(q.prekeys.choose).postln, false);
-q.preset.setTarg(q.prekeys.take(q.prekeys.choose).postln, false);
-q.preset.setProxy(q.prekeys.take(q.prekeys.choose).postln);
-q.preset.morphVal_(0.5);
+// "left, right, center settings:".postln;
+// q.prekeys = q.preset.settings.collect(_.key).drop(1);
+// q.preset.setCurr(q.prekeys.take(q.prekeys.choose).postln, false);
+// q.preset.setTarg(q.prekeys.take(q.prekeys.choose).postln, false);
+// q.preset.setProxy(q.prekeys.take(q.prekeys.choose).postln);
+// q.preset.morphVal_(0.5);
 
 q.nudge = { |q, step = 0.1, seed = 4711|
 	fork {
@@ -274,14 +276,12 @@ q.stepDryWet(-0.1);
 
 fork ({
 	0.5.wait;
-	q.pchain.remove(\freqMod);
-	0.5.wait;
 	// turn on input and limiter after gui is made
 	// to force gui update / wet labels.
-	q.pchain.add(\freqMod, 1);
 	q.pchain.add(\ins, 1);
 	q.pchain.add(\limiter, 1);
 	0.1.wait;
 	q.addWetSpecs;
 });
 );
+
