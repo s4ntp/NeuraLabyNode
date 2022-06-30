@@ -42,6 +42,8 @@ s.waitForBoot {
 
 	0.2.wait;
 
+	"~/Desktop/adjustments.scd".loadPaths;
+
 	/* all GUI stuff is here:
 	- Window.availableBounds on official raspi screen
 	with appearances default set to small screen is:
@@ -71,6 +73,14 @@ s.waitForBoot {
 
 	// always make the small RaspiGui
 	"RaspiGui.scd".postln.loadRelative;
+
+	// toggle one effect on/off to get green sliders
+	fork ({
+		q.pchain.remove(\freqMod);
+		0.5.wait;
+		q.pchain.add(\freqMod, 1);
+	});
+
 	// additional ones only if on big enough laptop screen:
 	if (Window.availableBounds.width >= 1200) {
 
