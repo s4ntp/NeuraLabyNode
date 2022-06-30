@@ -49,4 +49,6 @@ Ndef(\RawIns, { |balance = 0, delay = 0|
 	Balance2.ar(mix[0], mix[1], balance.lag(lag));
 });
 
-Ndef(\pinkTest, { PinkNoise.ar(1!2) }).vol_(0.25);
+Ndef(\pinkTest, { PinkNoise.ar }).vol_(0.25);
+
+Ndef(\sineTest, { SinOsc.ar(LFSaw.kr(0.1).exprange(20, 20000)) }).vol_(0.25);
