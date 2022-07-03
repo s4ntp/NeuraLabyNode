@@ -15,6 +15,14 @@ var t0 = Main.elapsedTime;
 "NeuralLabyrinths setup loading...\n\n".postln;
 q = q ? ();
 
+q.dir = q.dir ? ();
+q.dir.labyPath = thisProcess.nowExecutingPath;
+q.dir.labyDesk = "~/Desktop/NeuraLaby/".standardizePath;
+File.mkdir(q.dir.labyDesk);
+
+q.dir.labyAdjustPath = q.dir.labyDesk +/+ "adjustments.scd";
+
+
 // check for interfaces before server boots:
 // dont show new apple internal HIDs
 HIDMKtlDevice.deviceProductNamesToHide.addAll(
@@ -41,41 +49,19 @@ s.waitForBoot {
 	"autoMutate.scd".postln.loadRelative;
 
 	0.2.wait;
-	if ("~/Desktop/adjustments.scd".pathMatch.isEmpty) {
-		unixCmd("cp" + (thisProcess.nowExecutingPath.dirname.dirname
-			+/+ "adjustments.scd").quote + "~/Desktop/adjustments.scd");
-	};
-	"~/Desktop/adjustments.scd".loadPaths;
 
-	/* all GUI stuff is here:
-	- Window.availableBounds on official raspi screen
-	with appearances default set to small screen is:
-	Rect(0, 20, 797, 459);
-	- so all gui should be squeezable into that size.
-
-	// layout windows by hand and get their dimensions raw:
-	Window.getAllCS;
-	// with WinBounds:
-	WinBounds.storeAll;
-	WinBounds.stored; // here they are
-
-	Document("WinBounds_stored.scd", "// save?\n" ++ WinBounds.saveString);
-
-	// Window.setAll([
-	// 	[ "NdefMixer", Rect(0.0, 487.0, 632, 203.0) ],
-	// 	[ "NeuraLaby", Rect(0, 0, 800, 460) ],
-	// 	[ "lpd8", Rect(128.0, 36.0, 490.0, 150.0) ],
-	// 	[ "beatstep", Rect(99.0, 0.0, 610.0, 270.0) ],
-	// 	[ "nanokontrol2", Rect(0.0, 20.0, 912.0, 194.0) ],
-	// 	[ "uc4", Rect(780.0, 9.0, 490.0, 510.0) ],
-	// 	[ "xtouch", Rect(135.0, -141.0, 610.0, 510.0) ],
-	// 	[ "lpd8", Rect(128.0, 36.0, 490.0, 150.0) ]
-	// ]);
-
-	*/
 
 	// always make the small RaspiGui
 	"RaspiGui.scd".postln.loadRelative;
+
+	0.2.wait;
+
+	if (q.dir.labyAdjustPath.pathMatch.isEmpty) {
+		unixCmd("cp" + (thisProcess.nowExecutingPath.dirname.dirname
+			+/+ "adjustments.scd").quote + q.dir.labyAdjustPath.quote);
+	};
+
+	q.dir.labyAdjustPath.loadPaths;
 
 	// toggle one effect on/off to get green sliders
 	fork ({
