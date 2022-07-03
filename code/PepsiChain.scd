@@ -167,10 +167,10 @@ ProxyChain.add3(\gapz, \filter -> { |in,
 	probkeep = 0.5, mindur = 0.02|
 
 	var trig = Trig1.ar(in.sign, mindur.lag(Ndef(\lag)).clip(0, 1));
-	var passamp = Latch.ar(CoinGate.ar(probkeep.lag(Ndef(\lag)), trig), trig);
+	var passamp = Latch.ar(CoinGate.ar(probkeep.max(0.04).lag(Ndef(\lag)), trig), trig);
 	in * passamp;
 }, 0.5, (
-	\probkeep: [0, 1 ],
+	\probkeep: [0.04, 1 ],
 	\mindur: [0, 0.5, 2.77 ]
 ));
 
@@ -227,14 +227,24 @@ q.params = q.pchain.proxy.getKeysValues.flop[0].reject(_ == \lag);
 q.params.printcsAll;
 
 q.preset = NdefPreset(Ndef(\NeuraLaby), q.params);
-// q.preset.loadSettings;
 
-// "left, right, center settings:".postln;
-// q.prekeys = q.preset.settings.collect(_.key).drop(1);
-// q.preset.setCurr(q.prekeys.take(q.prekeys.choose).postln, false);
-// q.preset.setTarg(q.prekeys.take(q.prekeys.choose).postln, false);
-// q.preset.setProxy(q.prekeys.take(q.prekeys.choose).postln);
-// q.preset.morphVal_(0.5);
+q.deskpath = q.dir.labyDesk +/+ q.preset.presetPath.basename;
+if (File.exists(q.deskpath).not) {
+	"% : reading default settings from quark".postf(q.preset);
+	q.preset.loadSettings;
+} {
+	q.preset.storePath = q.deskpath;
+	q.preset.loadSettings;
+};
+// and continue to store here next time:
+q.preset.storePath = q.deskpath;
+
+"left, right, center settings:".postln;
+q.prekeys = q.preset.settings.collect(_.key).drop(1);
+q.preset.setCurr(q.prekeys.take(q.prekeys.choose).postln, false);
+q.preset.setTarg(q.prekeys.take(q.prekeys.choose).postln, false);
+q.preset.setProxy(q.prekeys.take(q.prekeys.choose).postln);
+q.preset.morphVal_(0.5);
 
 q.nudge = { |q, step = 0.1, seed = 4711|
 	fork {
