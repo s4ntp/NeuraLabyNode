@@ -46,8 +46,11 @@ q.texsize = 100@36;
 q.guibutzone = CompositeView(q.win, Rect(130, 0, 110, 220)).background_(Color.grey(0.7));
 q.guibutzone.addFlowLayout(2@2, 1@1);
 
-StaticText(q.guibutzone, q.texsize).string_("More Guis:")
+StaticText(q.guibutzone, q.texsize).string_("Extras:")
 .align_(\center).font_(q.font);
+
+q.redobut = Button(q.guibutzone, q.butsize) .states_([["RESET SOUND"]]).font_(q.font);
+q.redobut.action = { Ndef(\NeuraLaby).rebuild };
 
 q.autoBut = Button(q.guibutzone, q.butsize)
 .states_([["autoMutate?"],
@@ -70,11 +73,13 @@ q.mixerbut = Button(q.guibutzone, q.butsize)
 .states_([["Mixer"]]).font_(q.font);
 q.mixerbut.action = { WinBounds.showOrMake(\Mixer) };
 
-q.mktlbut = Button(q.guibutzone, q.butsize) .states_([["MKtl find"]]).font_(q.font);
-q.mktlbut.action = { MKtl.find };
+q.findbut = Button(q.guibutzone, q.butsize) .states_([["MKtl.find"]]).font_(q.font);
+q.findbut.action = { MKtl.find };
 
-q.mktlbut = Button(q.guibutzone, q.butsize) .states_([["interfaces"]]).font_(q.font);
-q.mktlbut.action = { MKtl.all.do { |mk| mk.gui.showLabels } };
+q.ifbut = Button(q.guibutzone, q.butsize) .states_([["interface"]]).font_(q.font);
+q.ifbut.action = { MKtl.all.do { |mk| mk.gui.showLabels } };
+
+
 
 ///////
 
