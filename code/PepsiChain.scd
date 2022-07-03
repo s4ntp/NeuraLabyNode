@@ -130,7 +130,7 @@ ProxyChain.add3(\hiPass, \filter -> { |in,
 //// goes from closing LPF to HPF
 (
 ProxyChain.add3(\filta, \filter -> { |in,
-	balance = 0,
+	tilt = 0,
 	// curve = 1, reso = 5,
 	flWidth = 0.5, flRate = 3, flRateMod = 0.5|
 	var lag = Ndef(\lag).kr[0];
@@ -143,7 +143,7 @@ ProxyChain.add3(\filta, \filter -> { |in,
 	var modOsc = SinOsc.ar(flRate.lag(lag) * envmod);
 	var freqmod = (modOsc * flWidth.lag(lag) * 0.5);
 
-	var freqctl = (balance + freqmod ** curve);
+	var freqctl = (tilt + freqmod ** curve);
 	var lpfreq = freqctl.linexp(-1, 0, 100, 20000);
 	var hpfreq = freqctl.linexp(0, 1, 20, 4000);
 
@@ -152,7 +152,7 @@ ProxyChain.add3(\filta, \filter -> { |in,
 1,
 (
 // specs go here:
-balance: \pan,
+tilt: \pan,
 curve: \pan,
 reso: [1, 11],
 flWidth: [-1, 1],
