@@ -25,10 +25,10 @@ q.mutaSum = 0;
 
 (
 Tdef(\autoMutate, { |env|
+	var mutaProb = 0;
 	q.spectral.start;
 	q.dbvals = [];
 	loop {
-		var mutaProb;
 		q.mutaSum = 0;
 		q.ampvals = q.spectral.ampsPx.bus.getnSynchronous;
 		q.dbvals = q.dbvals.addFirst(q.ampvals.ampdb);
