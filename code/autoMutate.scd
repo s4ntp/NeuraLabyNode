@@ -26,11 +26,12 @@ q.mutaSum = 0;
 (
 Tdef(\autoMutate, { |env|
 	var mutaProb = 0;
+	var dt;
 	q.spectral.start;
 	q.dbvals = [];
 	loop {
 		q.mutaSum = 0;
-		q.ampvals = q.spectral.ampsPx.bus.getnSynchronous;
+		q.ampvals = q.spectral.ampsPx.bus.getnSynchronous.max(0.001);
 		q.dbvals = q.dbvals.addFirst(q.ampvals.ampdb);
 		if (q.dbvals.size > 60) { q.dbvals = q.dbvals.keep(60) };
 		q.lastAmps = q.dbvals.collect(_[0]);
@@ -43,6 +44,13 @@ Tdef(\autoMutate, { |env|
 		if (mutaProb.coin) {
 			"*** mutate: %\n".postf(mutaProb.round(0.0001));
 			q.nudge(mutaProb, q.myseeds.choose);
+			//
+			if (0.1.coin) {
+				"delay: ".post;
+				Ndef(\RawIns).setUni(\delay,
+					(Ndef(\RawIns).getUni(\delay) + 0.04.bilinrand).fold(0, 1).postln
+				);
+			};
 		};
 		0.05.wait;
 	};
