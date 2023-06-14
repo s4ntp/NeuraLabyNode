@@ -84,7 +84,7 @@ ProxyChain.add3(\ampMod, \filter -> { |in, amFreq = 16, amWidth = 0.5, amRateMod
 
 // improved with mod positive = full ringmod, mod negative is pulsing
 
-ProxyChain.add3(\ampMod2, \filter -> { |in, amFreq = 16, amWidth = 0.5, amRateMod = 0.5|
+ProxyChain.add3(\ampMod, \filter -> { |in, amFreq = 16, amWidth = 0.5, amRateMod = 0.5|
 	var snd = in;
 	var lag = Ndef(\lag).kr[0];
 	var envel = Amplitude.kr(snd, 0.01, 0.5);
@@ -156,7 +156,7 @@ tilt: \pan,
 curve: \pan,
 reso: [1, 11],
 flWidth: [-1, 1],
-flRate: [0.1,200, \exp],
+flRate: [0.1, 50, \exp],
 flRateMod: [-1, 1]
 )
 )
@@ -253,7 +253,7 @@ q.nudge = { |q, step = 0.1, seed = 4711|
 			var proxy = q.pchain.proxy;
 			var val = proxy.getUni(param);
 			proxy.setUni(param, (val + step.rand2));
-		}
+		};
 	}
 };
 
