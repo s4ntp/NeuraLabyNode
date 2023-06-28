@@ -35,7 +35,7 @@ Spec.add(\delay, [0, 5, 3]);
 
 q.stepSpkObj = { |q, step = 0.0|
 	var ins = Ndef(\RawIns);
-	var curr = ins.getUni(\balance).postln;
+	var curr = ins.getUni(\balance);
 	ins.setUni(\balance, curr + step);
 };
 
