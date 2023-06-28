@@ -61,11 +61,7 @@ q.autoBut.mouseDownAction = { |bt, x, y, mod|
 	var tdef = Tdef(\autoMutate);
 	if (x >= 90) {
 		tdef.gui;
-	} {
-		if (tdef.isPlaying.not)
-		{ tdef.play }
-		{ tdef.stop }
-	};
+	} { q.autoToggle };
 	defer ({ bt.value = tdef.isPlaying.not.binaryValue }, 0.05);
 };
 
@@ -74,13 +70,15 @@ q.mixerbut = Button(q.guibutzone, q.butsize)
 q.mixerbut.action = { WinBounds.showOrMake(\Mixer) };
 
 q.findbut = Button(q.guibutzone, q.butsize) .states_([["MKtl.find"]]).font_(q.font);
-q.findbut.action = { MKtl.find(\midi) };
+q.findbut.action = {
+	MKtl.find([\midi, \hid]);
+	(q.dir.laby +/+ "LoadMidiIF.scd".postln).loadPaths;
+};
 
 q.ifbut = Button(q.guibutzone, q.butsize) .states_([["interface"]]).font_(q.font);
 q.ifbut.action = { MKtl.all.do { |mk| mk.gui.showLabels } };
 
-q.udbut = Button(q.guibutzone, q.butsize) .states_([["quarkUpdate"]]).font_(q.font);
-q.udbut.action = { Quark("NeuraLabyNode").update };
+
 
 ///////
 
