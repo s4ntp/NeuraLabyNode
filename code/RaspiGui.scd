@@ -78,7 +78,8 @@ q.findbut.action = {
 q.ifbut = Button(q.guibutzone, q.butsize) .states_([["interface"]]).font_(q.font);
 q.ifbut.action = { MKtl.all.do { |mk| mk.gui.showLabels } };
 
-
+q.udbut = Button(q.guibutzone, q.butsize) .states_([["quarkUpdate"]]).font_(q.font);
+q.udbut.action = { Quark("NeuraLabyNode").update };
 
 ///////
 
