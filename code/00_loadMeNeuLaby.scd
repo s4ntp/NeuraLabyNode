@@ -17,6 +17,8 @@ q = q ? ();
 
 q.dir = q.dir ? ();
 q.dir.labyPath = thisProcess.nowExecutingPath;
+q.dir.laby = q.dir.labyPath.dirname;
+// Destop path may not work on Windows?
 q.dir.labyDesk = "~/Desktop/NeuraLaby/".standardizePath;
 File.mkdir(q.dir.labyDesk);
 
@@ -28,7 +30,7 @@ q.dir.labyAdjustPath = q.dir.labyDesk +/+ "adjustments.scd";
 HIDMKtlDevice.deviceProductNamesToHide.addAll(
 	[ "", "BTM", "Headset", "Keyboard Backlight"]
 );
-fork { MKtl.find };
+fork { MKtl.find([\midi, \hid]) };
 
 // give it enough
 s.options.memSize = 8192 * 16;
