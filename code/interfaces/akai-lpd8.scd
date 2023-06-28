@@ -24,7 +24,7 @@ MKtl(\lpd8).elAt(\kn, 0).action_({ |kn|
 // left lower knob is spkObj balance
 MKtl(\lpd8).elAt(\kn, 4).action_({ |kn|
 	var delta = (kn.value - kn.prevValue).clip2(0.07);
-	q.stepDryWet(delta * 2)
+	q.stepSpkObj(delta * 2)
 }).elemDesc.label = "Spk Obj";
 
 // pads to nudge

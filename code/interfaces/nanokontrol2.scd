@@ -5,12 +5,27 @@ MKtl(\nanokontrol2).gui.showLabels;
 MKtl.all[\nanokontrol2].free;
 MKtl(\nanokontrol2, "*trol2");
 
+MKtl(\nanokontrol2).elAt(\tr, \stop)
+.action_({ |bt| if (bt.isOn) { q.autoOff }})
+.elemDesc.label_("auto OFF");
+MKtl(\nanokontrol2).elAt(\tr, \play)
+.action_({ |bt| if (bt.isOn) { q.autoOn }})
+.elemDesc.label_("auto OFF");
+
+
 MKtl(\nanokontrol2).elAt(\kn, 0).action_({ |kn|
 	var delta = (kn.value - kn.prevValue).clip2(0.07);
 	q.stepDryWet(delta * 2);
 }).elemDesc.label = "Less More";
 
-MKtl(\nanokontrol2).elAt(\kn, (1..7)).do { |kn, i|
+// left lower knob is spkObj balance
+MKtl(\nanokontrol2).elAt(\kn, 7).action_({ |kn|
+	var delta = (kn.value - kn.prevValue).clip2(0.07);
+	q.stepSpkObj(delta * 2)
+}).elemDesc.label = "Spk Obj";
+
+
+MKtl(\nanokontrol2).elAt(\kn, (1..6)).do { |kn, i|
 	kn.elemDesc.label = "nudge rd %".format(i);
 	kn.action = { |kn|
 		var nudgeval = ((kn.deviceValue - kn.prevDeviceValue)).clip2(5);
