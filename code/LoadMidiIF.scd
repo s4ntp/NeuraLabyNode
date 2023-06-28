@@ -3,10 +3,10 @@
 */
 
 (
-var here = thisProcess.nowExecutingPath.dirname;
+var here = q.dir.laby;
 var foundInfos, ifFilename, fullpath;
 
-MKtl.find;
+MKtl.find(\midi);
 foundInfos = MKtlLookup.all.asArray.collect(_.idInfo)
 .select(_.isString).reject(_.contains("_Apple")).asArray.sort;
 
