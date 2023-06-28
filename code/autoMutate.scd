@@ -23,6 +23,14 @@ Tdef(\autoMutate).addHalo(\orderedNames,
 
 q.mutaSum = 0;
 
+// for the interfaces:
+q.autoOn = { "autoMutate ON".postln; Tdef(\autoMutate).play };
+q.autoOff = { "autoMutate OFF".postln; Tdef(\autoMutate).stop };
+q.autoToggle = {
+	var t = Tdef(\autoMutate);
+	if (t.isPlaying) { q.autoOff } { q.autoOn }
+};
+
 (
 Tdef(\autoMutate, { |env|
 	var mutaProb = 0;
