@@ -19,17 +19,12 @@ MKtl(\xtouch).elAt(\A, \chan, 7, \enc, 0).action_({ |enc|
 }).elemDesc.label = "SpkObj";
 
 // button xxx toggles autoMutate
-MKtl(\xtouch).elAt(\A, \chan, 0, \bt, \B, \on).action = { |bt|
-	if (bt.isOn) {
-		if (Tdef('autoMutate').isPlaying.not) {
-			"'autoMutate' plays".postln;
-			Tdef('autoMutate').play
-		} {
-			"'autoMutate' stops".postln;
-			Tdef('autoMutate').stop
-		};
-	};
-};
+MKtl(\xtouch).elAt(\A, \chan, 0, \bt, \A, \on)
+.action_({ q.autoOn })
+.elemDesc.label_("auto ON");
+MKtl(\xtouch).elAt(\A, \chan, 0, \bt, \B, \on)
+.action_({ q.autoOff })
+.elemDesc.label_("auto OFF");
 
 // // use knobs for relative influence
 MKtl(\xtouch).elAt(\A, \chan, (1..6), \enc, 0).do { |enc, i|
