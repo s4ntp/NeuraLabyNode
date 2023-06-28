@@ -33,6 +33,12 @@ Spec.add(\midGain, [-24, 24]);
 Spec.add(\balance, \pan);
 Spec.add(\delay, [0, 5, 3]);
 
+q.stepSpkObj = { |q, step = 0.0|
+	var ins = Ndef(\RawIns);
+	var curr = ins.getUni(\balance).postln;
+	ins.setUni(\balance, curr + step);
+};
+
 Ndef(\RawIns, { |balance = 0, delay = 0|
 	var lag = Ndef('lag').kr[0];
 	var mix = ~inNdefs.collect { |ndef, i|

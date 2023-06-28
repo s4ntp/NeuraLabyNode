@@ -35,3 +35,19 @@ MKtl(\xtouch).elAt(\A, \chan, (1..6), \enc, 0).do { |enc, i|
 		q.nudge(step, q.myseeds[i]);
 	}
 };
+
+MKtl(\xtouch).elAt(\A, \chan, 0)
+\pgSl1, \bt, 4, 0)
+.action_({ q.preset.stepCurr(1) })
+.elemDesc.label_("pre L +");
+MKtl(\xtouch).elAt(\pgSl1, \bt, 5, 0)
+.action_({ q.preset.stepCurr(-1) })
+.elemDesc.label_("pre L -");
+//
+// MKtl(\xtouch).elAt(\pgSl1, \bt, 6, 0)
+// .action_({ q.preset.stepTarg(1) })
+// .elemDesc.label_("pre R +");
+// MKtl(\xtouch).elAt(\pgSl1, \bt, 7, 0)
+// .action_({ q.preset.stepTarg(-1) })
+// .elemDesc.label_("pre R -");
+
