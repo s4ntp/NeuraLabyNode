@@ -30,7 +30,6 @@ q.dir.labyAdjustPath = q.dir.labyDesk +/+ "adjustments.scd";
 HIDMKtlDevice.deviceProductNamesToHide.addAll(
 	[ "", "BTM", "Headset", "Keyboard Backlight"]
 );
-fork { MKtl.find([\midi, \hid]) };
 
 // give it enough
 s.options.memSize = 8192 * 16;
