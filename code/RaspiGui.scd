@@ -14,7 +14,7 @@ WinBounds.addMake(\Mixer, {
 try { q.win.close };
 
 q.font = Font(Font.defaultMonoFace, 14);
-q.win = Window(q.myhostname + "- NeuraLaby", 800@455).front;
+q.win = Window(q.myhostname + "-NeuLab", 800@455).front;
 q.meter = ServerMeterView(s, q.win, 0@0, 2, 2);
 q.stetho = Stethoscope(s, 4, view: CompositeView(q.win, Rect(0, 220, 250, 250)));
 q.stetho.view.children.keep(4).do(_.visible_(false));
