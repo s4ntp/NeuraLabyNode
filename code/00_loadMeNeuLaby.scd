@@ -15,6 +15,9 @@ var t0 = Main.elapsedTime;
 "NeuralLabyrinths setup loading...\n\n".postln;
 q = q ? ();
 
+q.myhostname = q.myhostname ? unixCmdGetStdOut("hostname").split($.).first;
+"*** q.myhostname: %\n".postf(q.myhostname);
+
 q.dir = q.dir ? ();
 q.dir.labyPath = thisProcess.nowExecutingPath;
 q.dir.laby = q.dir.labyPath.dirname;
