@@ -55,6 +55,12 @@ s.waitForBoot {
 	0.2.wait;
 
 
+	if (\ARMLP.asClass.notNil) {
+		"armlpNL.scd".postln.loadRelative;
+	};
+
+	0.2.wait;
+
 	// always make the small RaspiGui
 	"RaspiGui.scd".postln.loadRelative;
 

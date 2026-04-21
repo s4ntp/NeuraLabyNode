@@ -1,5 +1,6 @@
 /*
 q.testRaspiScreen
+Window.closeAll
 */
 
 (
@@ -14,7 +15,8 @@ WinBounds.addMake(\Mixer, {
 try { q.win.close };
 
 q.font = Font(Font.defaultMonoFace, 14);
-q.win = Window(q.myhostname + "-NeuLab", 800@455).front;
+q.win = Window(q.myhostname ++ "_NeuraLaby", 800@455).front;
+q.win.userCanClose = false;
 q.meter = ServerMeterView(s, q.win, 0@0, 2, 2);
 q.stetho = Stethoscope(s, 4, view: CompositeView(q.win, Rect(0, 220, 250, 250)));
 q.stetho.view.children.keep(4).do(_.visible_(false));
@@ -29,6 +31,7 @@ q.uv.drawFunc = {
 q.win.refresh;
 
 q.stetho.view.visible = true;
+
 q.testRaspiScreen = {
 	~raspibounds = Rect(0, 0, 797, 439);
 
@@ -48,6 +51,9 @@ q.guibutzone.addFlowLayout(2@2, 1@1);
 
 StaticText(q.guibutzone, q.texsize).string_("Extras:")
 .align_(\center).font_(q.font);
+
+q.neuralbut = Button(q.guibutzone, q.butsize) .states_([["NeuralSynth"]]).font_(q.font);
+q.neuralbut.action = { WinBounds.showOrMake(\NeuralSynth) };
 
 q.redobut = Button(q.guibutzone, q.butsize) .states_([["RESET SOUND"]]).font_(q.font);
 q.redobut.action = { Ndef(\NeuraLaby).rebuild };
@@ -142,7 +148,7 @@ q.balgui.drawFunc.enable(\number);
 q.drywetBut = Button(q.butZone, q.butsize).states_([["dry <-> FX"]])
 .font_(q.font);
 q.drywetBut.mouseDownAction = { |b, x, y|
-	[b, x, y].postln;
+	// [b, x, y].postln;
 	q.stepDryWet(x-50 * 0.01);
 };
 
