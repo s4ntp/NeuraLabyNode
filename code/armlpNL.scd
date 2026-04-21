@@ -48,7 +48,7 @@ Ndef(\armlpNL);
 
 // make specs global for now:
 
-Spec.add(\netEpochs, [1, 11, \lin, 1]);
+Spec.add(\netEpochs, [1, 5, \lin, 1]);
 
 ['mic', 'feedback', 'learnRate1', 'learnRate2', 'ridge'].do { |name|
 	Spec.add(name, [0, 1, \amp]);
@@ -81,11 +81,11 @@ Ndef(\armlpNL).addHalo(\namesToStore, [
 ]);
 
 // handle init-only params by storing when (re)building:
-Spec.add(\netSize, [1, 11, \lin, 1]);
-Spec.add(\netWidth, [1, 11, \lin, 1]);
+Spec.add(\netSize, [1, 8, \lin, 1]);
+Spec.add(\netWidth, [1, 4, \lin, 1]);
 
 Ndef(\armlpNL).addHalo(\fixed, (
-	netSize: 11, netWidth: 4
+	netSize: 6, netWidth: 4
 ));
 Ndef(\armlpNL).addHalo(\store, { |halo|
 	halo.stored = halo.fixed.copy.postcs;
@@ -96,6 +96,7 @@ Ndef(\armlpNL).addHalo(\store, { |halo|
 });
 
 (
+Ndef(\armlpNL).vol_(0);
 Ndef(\armlpNL, { |
 	amp = 0.25,
 	mic = 0.25, feedback=0.25,

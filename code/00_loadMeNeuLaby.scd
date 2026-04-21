@@ -88,6 +88,8 @@ s.waitForBoot {
 
 		MKtl.all.do { |mk| mk.gui.showLabels };
 
+		WinBounds.showOrMake(\NeuralSynth);
+
 		"*** NeuralLabyrinths setup loaded in % seconds.\n".postf(
 			(Main.elapsedTime - t0).round(0.01));
 	};
