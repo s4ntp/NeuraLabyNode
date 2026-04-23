@@ -33,11 +33,11 @@ q.win.refresh;
 q.stetho.view.visible = true;
 
 q.testRaspiScreen = {
-	~raspibounds = Rect(0, 0, 797, 439);
+	q.laby.raspibounds = Rect(0, 0, 797, 439);
 
 	"windows outside raspi bounds:".postln;
 	Window.allWindows.select { |win|
-		~raspibounds.contains(win.bounds).not
+		q.laby.raspibounds.contains(win.bounds).not
 	}.collect { |win| [win.name, win.bounds] }.printAll;
 	"";
 };

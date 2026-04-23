@@ -14,8 +14,10 @@ var t0 = Main.elapsedTime;
 
 "NeuralLabyrinths setup loading...\n\n".postln;
 q = q ? ();
+// put everything laby here
+q.laby = q.laby ? ();
 
-q.myhostname = q.myhostname ? unixCmdGetStdOut("hostname").split($.).first;
+q.myhostname = q.myhostname ? unixCmdGetStdOut("whoami").split($.).first;
 "*** q.myhostname: %\n".postf(q.myhostname);
 
 q.dir = q.dir ? ();
@@ -56,7 +58,10 @@ s.waitForBoot {
 
 
 	if (\ARMLP.asClass.notNil) {
-		"armlpNL.scd".postln.loadRelative;
+		"trying to load ARMLP patch: ".postln;
+		try {
+			"armlpNL.scd".postln.loadRelative.postln;
+		};
 	};
 
 	0.2.wait;
@@ -80,7 +85,7 @@ s.waitForBoot {
 		q.pchain.add(\freqMod, 1);
 	});
 
-	// additional ones only if on big enough laptop screen:
+	// additional GUIs only if on big enough laptop screen:
 	if (Window.availableBounds.width >= 1200) {
 
 		WinBounds.showOrMake(\Mixer);
