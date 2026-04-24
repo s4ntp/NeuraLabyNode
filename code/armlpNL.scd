@@ -11,6 +11,8 @@ netSize 6, netWidth 2, netEpochs 1 : 40%
 
 defer ({ WinBounds.showOrMake(\NeuralSynth) }, 1);
 
+Ndef(\armlpNL).clear;
+
 */
 
 (
@@ -22,11 +24,19 @@ WinBounds.addMake(\NeuralSynth, {
 	var b = Button(w, 60@40).states_([["RESTART"]]);
 	var expBt = Button(w, 50@40).states_([["basic"], ["expert"]]);
 	var g = NdefPresetGui(NdefPreset(\armlpNL), 19, w);
+
+	g.proxyGui.nameView
+	.background_(Color.blue).stringColor_(Color.white)
+	.font_(Font(Font.defaultSansFace, 13));
+
 	b.action = {
 		Ndef(\armlpNL).postln.rebuild.play;
 	};
 	expBt.action = { |bt|
-		g.proxyGui.paramGui.paramViews.drop(10).drop(-1).do(_.visible_(bt.value > 0));
+		var mode = [\basic, \expert][bt.value].postln;
+		Ndef(\armlpNL).addHalo(\mode, mode);
+
+		g.proxyGui.paramGui.paramViews.drop(10).drop(-1).do(_.visible_(mode == \expert));
 		w.bounds = w.bounds.flipY.height_([330, 470][bt.value]).flipY;
 	};
 	// remove drags, make labels bigger?
@@ -42,8 +52,11 @@ WinBounds.addMake(\NeuralSynth, {
 });
 );
 
-Ndef(\armlpNL).clear;
-Ndef(\armlpNL);
+Ndef(\armlpNL).addHalo(\setMode, { |modeIndex=0|
+	var mode = [\basic, \expert][modeIndex].postln;
+	Ndef(\armlpNL).addHalo(\mode, mode);
+	NdefPreset(\armlpNL).namesToStore
+});
 
 
 // make specs global for now:
@@ -69,7 +82,7 @@ Spec.add(\maxWeight, [1, 25, \exp]);
 Spec.add(\reset, [-1, 1]);
 
 
-
+Ndef(\armlpNL).addHalo(\mode, \basic);
 
 Ndef(\armlpNL).addHalo(\namesToStore, [
 	'mic', 'feedback',
@@ -114,7 +127,7 @@ Ndef(\armlpNL, { |
 
 	var in = (BrownNoise.ar(0.0001))
 	+ (LocalIn.ar(1) * (feedback * 4).lag(1))
-	+ SoundIn.ar(0) * (mic * 4).lag(1);
+	+ SoundIn.ar([0, 1]).sum * (mic * 4).lag(1);
 
 	var ridge2 = (ridge.squared * 0.01).max(0.00001);
 
@@ -128,7 +141,7 @@ Ndef(\armlpNL, { |
 			netEpochs,
 			learnRate1, learnRate2, ridge2,
 			act1, act2, sineFac,
-            momentum, errorMode, gradNoise,
+			momentum, errorMode, gradNoise,
             recurrent, maxWeight/*, reset*/
 		).zap;
 
@@ -145,8 +158,26 @@ Ndef(\armlpNL, { |
 
 	LPF.ar(HPF.ar(LeakDC.ar(Splay.ar(chans.scramble, 1, amp)), 20), 12000).zap.flat.tanh;
 });
-NdefPreset(\armlpNL);
+NdefPreset(\armlpNL, Ndef(\armlpNL).getHalo(\namesToStore));
+NdefPreset('armlpNL').storePath =
+NeuLab.dir.labyDesk +/+ NdefPreset('armlpNL').presetPath.basename;
+NdefPreset('armlpNL').storeToDisk = true;
+NdefPreset('armlpNL').loadSettings;
 
 Spec.add(\neusyAmp, \amp);
 Ndef(\RawIns).put(10, { |neusyAmp = 1| Ndef('armlpNL').ar * neusyAmp.lag(1) });
 );
+
+
+NeuLab.nudgeArm = { |q, step = 0.1, seed = 4711|
+	"nudgeArm".postln;
+	fork {
+		var pre = NdefPreset('armlpNL');
+		var params = pre.namesToStore.postln;
+		params.do { |param|
+			var proxy = pre.proxy;
+			var val = proxy.getUni(param);
+			proxy.setUni(param, (val + step.rand2));
+		};
+	}
+};
