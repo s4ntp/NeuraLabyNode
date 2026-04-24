@@ -79,8 +79,8 @@ s.waitForBoot {
 
 		WinBounds.showOrMake(\NeuralSynth);
 
-		"*** NeuralLabyrinths setup loaded in % seconds.\n".postf(
-			(Main.elapsedTime - t0).round(0.01));
 	};
+	"*** NeuralLabyrinths setup loaded in % seconds.\n".postf(
+		(Main.elapsedTime - t0).round(0.01));
 
 };
