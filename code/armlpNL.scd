@@ -98,7 +98,7 @@ Ndef(\armlpNL).addHalo(\store, { |halo|
 (
 Ndef(\armlpNL).vol_(0);
 Ndef(\armlpNL, { |
-	amp = 0.25,
+	amp = 0.0,
 	mic = 0.25, feedback=0.25,
 	netEpochs = 4,learnRate1 = 0.8, learnRate2 = 0.8, ridge = 0.001,
 	delayMax = 0.1, delayRate = 0.1, delayDepth = 0.5,
@@ -146,4 +146,7 @@ Ndef(\armlpNL, { |
 	LPF.ar(HPF.ar(LeakDC.ar(Splay.ar(chans.scramble, 1, amp)), 20), 12000).zap.flat.tanh;
 });
 NdefPreset(\armlpNL);
+
+Spec.add(\neusyAmp, \amp);
+Ndef(\RawIns).put(10, { |neusyAmp = 1| Ndef('armlpNL').ar * neusyAmp.lag(1) });
 );
