@@ -3,7 +3,7 @@
 */
 
 (
-var here = q.dir.laby;
+var here = NeuLab.dir.laby;
 var foundInfos, ifFilename, fullpath;
 
 MKtl.find(\midi);

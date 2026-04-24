@@ -5,19 +5,19 @@ Spec.add(\midFreq, [100, 10000, \exp]);
 Spec.add(\midWidth, [0.1, 10, \exp]);
 Spec.add(\midGain, [-24, 24]);
 
-q.laby.numIns = q.laby.numIns ? 2;
+NeuLab.numIns = NeuLab.numIns ? 2;
 // max input names
-q.laby.inNames = [\inMic, \inPiezo, \line1, \line2, \nodeX, \nodeY];
+NeuLab.inNames = [\inMic, \inPiezo, \line1, \line2, \nodeX, \nodeY];
 
 // keep all 6 for large audio interface, or just 4,
 // or just 2 for audio mixer as 2 chan interface
-q.laby.inNames = q.laby.inNames.keep(q.laby.numIns);
-q.laby.inNames.do (Spec.add(_, \gain));
-q.laby.panNames = q.laby.inNames.collect { |name| (name ++ "Pan").asSymbol };
-q.laby.panNames.do (Spec.add(_, \pan));
+NeuLab.inNames = NeuLab.inNames.keep(NeuLab.numIns);
+NeuLab.inNames.do (Spec.add(_, \gain));
+NeuLab.panNames = NeuLab.inNames.collect { |name| (name ++ "Pan").asSymbol };
+NeuLab.panNames.do (Spec.add(_, \pan));
 
 
-q.laby.inNdefs = q.laby.inNames.collect { |name, index|
+NeuLab.inNdefs = NeuLab.inNames.collect { |name, index|
 	Ndef(name, {
 		var snd = SoundIn.ar(index);
 		var amp = \gain.kr(1, 0.5);
@@ -33,7 +33,7 @@ q.laby.inNdefs = q.laby.inNames.collect { |name, index|
 Spec.add(\balance, \pan);
 Spec.add(\delay, [0, 5, 3]);
 
-q.stepSpkObj = { |q, step = 0.0|
+NeuLab.stepSpkObj = { |q, step = 0.0|
 	var ins = Ndef(\RawIns);
 	var curr = ins.getUni(\balance);
 	ins.setUni(\balance, curr + step);
@@ -41,10 +41,10 @@ q.stepSpkObj = { |q, step = 0.0|
 
 Ndef(\RawIns, { |balance = 0, delay = 0|
 	var lag = Ndef('lag').kr[0];
-	var mix = q.laby.inNdefs.collect { |ndef, i|
-		var ampname =  q.laby.inNames[i];
+	var mix = NeuLab.inNdefs.collect { |ndef, i|
+		var ampname =  NeuLab.inNames[i];
 		var amp = ampname.kr(1, lag);
-		var panname = q.laby.panNames[i];
+		var panname = NeuLab.panNames[i];
 		var pan = panname.kr([-1, 1][i], lag);
 
 		Pan2.ar(ndef.ar(1), pan, amp);

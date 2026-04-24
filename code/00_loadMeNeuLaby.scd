@@ -1,42 +1,26 @@
 /*
-StartupFile.dialog;
-
-var rw = Window("raspiBackground", Window.availableBounds).front.alpha_(0.5);
-rw.background = Color.black;
-StaticText(rw, rw.bounds.right_(800).top_(rw.bounds.height - 460))
-.background_(Color.white);
-Window.allWindows.do(_.front);
-rw.bounds
 
 */
 
 var t0 = Main.elapsedTime;
 
+
 "NeuralLabyrinths setup loading...\n\n".postln;
-q = q ? ();
-// put everything laby here
-q.laby = q.laby ? ();
 
-q.myhostname = q.myhostname ? unixCmdGetStdOut("whoami").split($.).first;
-"*** q.myhostname: %\n".postf(q.myhostname);
+NeuLab.myhostname = NeuLab.myhostname ? unixCmdGetStdOut("whoami").split($.).first;
+"*** NeuLab.myhostname: %\n".postf(NeuLab.myhostname);
 
-q.dir = q.dir ? ();
-q.dir.labyPath = thisProcess.nowExecutingPath;
-q.dir.laby = q.dir.labyPath.dirname;
-// Destop path may not work on Windows?
-q.dir.labyDesk = "~/Desktop/NeuraLaby/".standardizePath;
-File.mkdir(q.dir.labyDesk);
+NeuLab.dir.labyPath = thisProcess.nowExecutingPath;
+NeuLab.dir.laby = NeuLab.dir.labyPath.dirname;
 
-q.dir.labyAdjustPath = q.dir.labyDesk +/+ "adjustments.scd";
+// Desktop path may not work on Windows?
+NeuLab.dir.labyDesk = "~/Desktop/NeuLab/".standardizePath;
+File.mkdir(NeuLab.dir.labyDesk);
+NeuLab.dir.labyAdjustPath = NeuLab.dir.labyDesk +/+ "adjustments.scd";
 
 
-// check for interfaces before server boots:
-// dont show new apple internal HIDs
-HIDMKtlDevice.deviceProductNamesToHide.addAll(
-	[ "", "BTM", "Headset", "Keyboard Backlight"]
-);
-
-// give it enough
+// give server enough realtime memory,
+// otherwise leave defaults to system
 s.options.memSize = 8192 * 16;
 
 s.waitForBoot {
@@ -71,18 +55,18 @@ s.waitForBoot {
 
 	0.2.wait;
 
-	if (q.dir.labyAdjustPath.pathMatch.isEmpty) {
+	if (NeuLab.dir.labyAdjustPath.pathMatch.isEmpty) {
 		unixCmd("cp" + (thisProcess.nowExecutingPath.dirname.dirname
-			+/+ "adjustments.scd").quote + q.dir.labyAdjustPath.quote);
+			+/+ "adjustments.scd").quote + NeuLab.dir.labyAdjustPath.quote);
 	};
 
-	q.dir.labyAdjustPath.loadPaths;
+	NeuLab.dir.labyAdjustPath.loadPaths;
 
 	// toggle one effect on/off to get green sliders
 	fork ({
-		q.pchain.remove(\freqMod);
+		NeuLab.pchain.remove(\freqMod);
 		0.5.wait;
-		q.pchain.add(\freqMod, 1);
+		NeuLab.pchain.add(\freqMod, 1);
 	});
 
 	// additional GUIs only if on big enough laptop screen:

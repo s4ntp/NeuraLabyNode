@@ -10,12 +10,10 @@ For testing and performing :
 - 1 drop sink for soundfile, reuse pepsi tape (tape player)
 - make a tapes/soundfiles folder locally,
 - with subfolders to load array of files at once
-
 */
 (
-q = q ? ();
 
-q.lag = Ndef('lag', { |lag=3| lag });
+NeuLab.lag = Ndef('lag', { |lag=3| lag });
 
 Spec.add(\amp4, [0, 4, \amp]);
 Spec.add(\drive, [0, 10, 4.4]);
@@ -195,15 +193,15 @@ ProxyChain.add3(\limiter, \filter -> { |in,
 // making
 ///// tanh moved into limiter to save one GUI line
 
-q.pcSlots = [\ins, \freqMod, \ampMod, \filta, \gapz, \limiter ];
+NeuLab.pcSlots = [\ins, \freqMod, \ampMod, \filta, \gapz, \limiter ];
 
-q.pchain.free;
-q.pchain = ProxyChain.from(Ndef(\NeuraLaby), q.pcSlots).play;
+NeuLab.pchain.free;
+NeuLab.pchain = ProxyChain.from(Ndef(\NeuraLaby), NeuLab.pcSlots).play;
 
 Ndef(\NeuraLaby).fadeTime = 10;
 
 // turn on the FX that can be nudged
-q.pchain.do { |pc, i|
+NeuLab.pchain.do { |pc, i|
 	pc.add(\freqMod, 1);
 	pc.add(\ampMod, 1);
 	pc.add(\filta, 1);
@@ -213,60 +211,60 @@ q.pchain.do { |pc, i|
 // set wetspecs to linear crossfade!
 // due to a bug in ProxyChain,
 // needs to be done always after .addSlot ...
-q.wetKeys = ['wet20', 'wet30', 'wet40', 'wet50', 'wet60'];
+NeuLab.wetKeys = ['wet20', 'wet30', 'wet40', 'wet50', 'wet60'];
 
-q.addWetSpecs = {
-	q.wetKeys.do (Ndef(\NeuraLaby).addSpec(_, \unipolar))
+NeuLab.addWetSpecs = {
+	NeuLab.wetKeys.do (Ndef(\NeuraLaby).addSpec(_, \unipolar))
 };
 
-q.addWetSpecs;
+NeuLab.addWetSpecs;
 
 // grab the parameters to nudge
-q.params = q.pchain.proxy.getKeysValues.flop[0].reject(_ == \lag);
-"**** q.params for preset: ".postln;
-q.params.printcsAll;
+NeuLab.params = NeuLab.pchain.proxy.getKeysValues.flop[0].reject(_ == \lag);
+"**** NeuLab.params for preset: ".postln;
+NeuLab.params.printcsAll;
 
-q.preset = NdefPreset(Ndef(\NeuraLaby), q.params);
+NeuLab.preset = NdefPreset(Ndef(\NeuraLaby), NeuLab.params);
 
-q.deskpath = q.dir.labyDesk +/+ q.preset.presetPath.basename;
-if (File.exists(q.deskpath).not) {
-	"% : reading default settings from quark".postf(q.preset);
-	q.preset.loadSettings;
+NeuLab.deskpath = NeuLab.dir.labyDesk +/+ NeuLab.preset.presetPath.basename;
+if (File.exists(NeuLab.deskpath).not) {
+	"% : reading default settings from quark".postf(NeuLab.preset);
+	NeuLab.preset.loadSettings;
 } {
-	q.preset.storePath = q.deskpath;
-	q.preset.loadSettings;
+	NeuLab.preset.storePath = NeuLab.deskpath;
+	NeuLab.preset.loadSettings;
 };
 // and continue to store here next time:
-q.preset.storePath = q.deskpath;
+NeuLab.preset.storePath = NeuLab.deskpath;
 
 "left, right, center settings:".postln;
-q.prekeys = q.preset.settings.collect(_.key).drop(1);
-q.preset.setCurr(q.prekeys.take(q.prekeys.choose).postln, false);
-q.preset.setTarg(q.prekeys.take(q.prekeys.choose).postln, false);
-q.preset.setProxy(q.prekeys.take(q.prekeys.choose).postln);
-q.preset.morphVal_(0.5);
+NeuLab.prekeys = NeuLab.preset.settings.collect(_.key).drop(1);
+NeuLab.preset.setCurr(NeuLab.prekeys.take(NeuLab.prekeys.choose).postln, false);
+NeuLab.preset.setTarg(NeuLab.prekeys.take(NeuLab.prekeys.choose).postln, false);
+NeuLab.preset.setProxy(NeuLab.prekeys.take(NeuLab.prekeys.choose).postln);
+NeuLab.preset.morphVal_(0.5);
 
-q.nudge = { |q, step = 0.1, seed = 4711|
+NeuLab.nudge = { |q, step = 0.1, seed = 4711|
 	fork {
 		thisThread.randSeed_(seed);
-		q.params.do { |param|
-			var proxy = q.pchain.proxy;
+		NeuLab.params.do { |param|
+			var proxy = NeuLab.pchain.proxy;
 			var val = proxy.getUni(param);
 			proxy.setUni(param, (val + step.rand2));
 		};
 	}
 };
 
-q.myseeds = 16.collect { 1000.rand };
+NeuLab.myseeds = 16.collect { 1000.rand };
 
 /*
-q.nudge(0.1, 123);
-q.nudge(-0.1, 123);
+NeuLab.nudge(0.1, 123);
+NeuLab.nudge(-0.1, 123);
 */
 
-// Ndef(\NeuraLaby).getKeysValues.flop[0].sort.cs;
-q.stepDryWet = { |q, step = 0.1|
-	var ndef = Ndef(\NeuraLaby);
+// Ndef(\NeuLab).getKeysValues.flop[0].sort.cs;
+NeuLab.stepDryWet = { |q, step = 0.1|
+	var ndef = Ndef(\NeuLab);
 	var paramKeys = ['wet20', 'wet30', 'wet40', 'wet50'];
 	var settings = ndef.getKeysValues(paramKeys);
 	var newSettings = settings.collect { |pair|
@@ -280,18 +278,18 @@ q.stepDryWet = { |q, step = 0.1|
 	ndef.set(*newSettings.flat);
 };
 /*
-q.stepDryWet(0.1);
-q.stepDryWet(-0.1);
+NeuLab.stepDryWet(0.1);
+NeuLab.stepDryWet(-0.1);
 */
 
 fork ({
 	0.5.wait;
 	// turn on input and limiter after gui is made
 	// to force gui update / wet labels.
-	q.pchain.add(\ins, 1);
-	q.pchain.add(\limiter, 1);
+	NeuLab.pchain.add(\ins, 1);
+	NeuLab.pchain.add(\limiter, 1);
 	0.1.wait;
-	q.addWetSpecs;
+	NeuLab.addWetSpecs;
 });
-);
+)
 

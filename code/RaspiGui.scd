@@ -1,199 +1,199 @@
 /*
-q.testRaspiScreen
+NeuLab.testRaspiScreen
 Window.closeAll
 */
 
 (
 WinBounds.addMake(\Mixer, {
-	q.mixer = NdefMixer.small(s, 8);
-	q.mixer.parent.name_(\Mixer);
-	ProxyMeter.addMixer(q.mixer);
+	NeuLab.mixer = NdefMixer.small(s, 8);
+	NeuLab.mixer.parent.name_(\Mixer);
+	ProxyMeter.addMixer(NeuLab.mixer);
 	// return window for WinBounds:
-	q.mixer.parent;
+	NeuLab.mixer.parent;
 });
 
-try { q.win.close };
+try { NeuLab.win.close };
 
-q.font = Font(Font.defaultMonoFace, 14);
-q.win = Window(q.myhostname ++ "_NeuraLaby", 800@455).front;
-q.win.userCanClose = false;
-q.meter = ServerMeterView(s, q.win, 0@0, 2, 2);
-q.stetho = Stethoscope(s, 4, view: CompositeView(q.win, Rect(0, 220, 250, 250)));
-q.stetho.view.children.keep(4).do(_.visible_(false));
-q.stetho.xZoom = 0.1;
+NeuLab.font = Font(Font.defaultMonoFace, 14);
+NeuLab.win = Window(NeuLab.myhostname ++ "_NeuraLaby", 800@455).front;
+NeuLab.win.userCanClose = false;
+NeuLab.meter = ServerMeterView(s, NeuLab.win, 0@0, 2, 2);
+NeuLab.stetho = Stethoscope(s, 4, view: CompositeView(NeuLab.win, Rect(0, 220, 250, 250)));
+NeuLab.stetho.view.children.keep(4).do(_.visible_(false));
+NeuLab.stetho.xZoom = 0.1;
 
-q.uv = UserView(q.win, q.stetho.view.bounds.moveTo(0, 220).width_(200));
-q.uv.background_(Color.blue(1, 0));
+NeuLab.uv = UserView(NeuLab.win, NeuLab.stetho.view.bounds.moveTo(0, 220).width_(200));
+NeuLab.uv.background_(Color.blue(1, 0));
 
-q.uv.drawFunc = {
-	Pen.stringCenteredIn("Out_Spk\n\n\nOut_Obj\n\n\nIn_Mic\n\n\nIn_Obj\n", q.uv.bounds.moveTo(0, 0), q.font.copy.size_(16), Color(0.62, 0.62, 1.0));
+NeuLab.uv.drawFunc = {
+	Pen.stringCenteredIn("Out_Spk\n\n\nOut_Obj\n\n\nIn_Mic\n\n\nIn_Obj\n", NeuLab.uv.bounds.moveTo(0, 0), NeuLab.font.copy.size_(16), Color(0.62, 0.62, 1.0));
 };
-q.win.refresh;
+NeuLab.win.refresh;
 
-q.stetho.view.visible = true;
+NeuLab.stetho.view.visible = true;
 
-q.testRaspiScreen = {
-	q.laby.raspibounds = Rect(0, 0, 797, 439);
+NeuLab.testRaspiScreen = {
+	NeuLab.laby.raspibounds = Rect(0, 0, 797, 439);
 
 	"windows outside raspi bounds:".postln;
 	Window.allWindows.select { |win|
-		q.laby.raspibounds.contains(win.bounds).not
+		NeuLab.laby.raspibounds.contains(win.bounds).not
 	}.collect { |win| [win.name, win.bounds] }.printAll;
 	"";
 };
 
 
-q.butsize = 100@25;
-q.texsize = 100@36;
+NeuLab.butsize = 100@25;
+NeuLab.texsize = 100@36;
 
-q.guibutzone = CompositeView(q.win, Rect(130, 0, 110, 220)).background_(Color.grey(0.7));
-q.guibutzone.addFlowLayout(2@2, 1@1);
+NeuLab.guibutzone = CompositeView(NeuLab.win, Rect(130, 0, 110, 220)).background_(Color.grey(0.7));
+NeuLab.guibutzone.addFlowLayout(2@2, 1@1);
 
-StaticText(q.guibutzone, q.texsize).string_("Extras:")
-.align_(\center).font_(q.font);
+StaticText(NeuLab.guibutzone, NeuLab.texsize).string_("Extras:")
+.align_(\center).font_(NeuLab.font);
 
-q.neuralbut = Button(q.guibutzone, q.butsize) .states_([["NeuralSynth"]]).font_(q.font);
-q.neuralbut.action = { WinBounds.showOrMake(\NeuralSynth) };
+NeuLab.neuralbut = Button(NeuLab.guibutzone, NeuLab.butsize) .states_([["NeuralSynth"]]).font_(NeuLab.font);
+NeuLab.neuralbut.action = { WinBounds.showOrMake(\NeuralSynth) };
 
-q.redobut = Button(q.guibutzone, q.butsize) .states_([["RESET SOUND"]]).font_(q.font);
-q.redobut.action = { Ndef(\NeuraLaby).rebuild };
+NeuLab.redobut = Button(NeuLab.guibutzone, NeuLab.butsize) .states_([["RESET SOUND"]]).font_(NeuLab.font);
+NeuLab.redobut.action = { Ndef(\NeuraLaby).rebuild };
 
-q.autoBut = Button(q.guibutzone, q.butsize)
+NeuLab.autoBut = Button(NeuLab.guibutzone, NeuLab.butsize)
 .states_([["autoMutate?"],
 	["autoMutate!", Color.black, Color.green]
-]).font_(q.font);
-q.autoBut.action = nil;
-q.autoBut.mouseDownAction = { |bt, x, y, mod|
+]).font_(NeuLab.font);
+NeuLab.autoBut.action = nil;
+NeuLab.autoBut.mouseDownAction = { |bt, x, y, mod|
 	var tdef = Tdef(\autoMutate);
 	if (x >= 90) {
 		tdef.gui;
-	} { q.autoToggle };
+	} { NeuLab.autoToggle };
 	defer ({ bt.value = tdef.isPlaying.not.binaryValue }, 0.05);
 };
 
-q.mixerbut = Button(q.guibutzone, q.butsize)
-.states_([["Mixer"]]).font_(q.font);
-q.mixerbut.action = { WinBounds.showOrMake(\Mixer) };
+NeuLab.mixerbut = Button(NeuLab.guibutzone, NeuLab.butsize)
+.states_([["Mixer"]]).font_(NeuLab.font);
+NeuLab.mixerbut.action = { WinBounds.showOrMake(\Mixer) };
 
-q.findbut = Button(q.guibutzone, q.butsize) .states_([["MKtl.find"]]).font_(q.font);
-q.findbut.action = {
+NeuLab.findbut = Button(NeuLab.guibutzone, NeuLab.butsize) .states_([["MKtl.find"]]).font_(NeuLab.font);
+NeuLab.findbut.action = {
 	MKtl.find([\midi, \hid]);
-	(q.dir.laby +/+ "LoadMidiIF.scd".postln).loadPaths;
+	(NeuLab.dir.laby +/+ "LoadMidiIF.scd".postln).loadPaths;
 };
 
-q.ifbut = Button(q.guibutzone, q.butsize) .states_([["interface"]]).font_(q.font);
-q.ifbut.action = { MKtl.all.do { |mk| mk.gui.showLabels } };
+NeuLab.ifbut = Button(NeuLab.guibutzone, NeuLab.butsize) .states_([["interface"]]).font_(NeuLab.font);
+NeuLab.ifbut.action = { MKtl.all.do { |mk| mk.gui.showLabels } };
 
-q.udbut = Button(q.guibutzone, q.butsize) .states_([["quarkUpdate"]]).font_(q.font);
-q.udbut.action = { Quark("NeuraLabyNode").update };
+NeuLab.udbut = Button(NeuLab.guibutzone, NeuLab.butsize) .states_([["quarkUpdate"]]).font_(NeuLab.font);
+NeuLab.udbut.action = { Quark("NeuraLabyNode").update };
 
 ///////
 
-q.butZone = CompositeView(q.win, Rect(248, 0, 106, 440)).background_(Color.grey(0.7));
-q.butZone.addFlowLayout(2@2, 1@1);
+NeuLab.butZone = CompositeView(NeuLab.win, Rect(248, 0, 106, 440)).background_(Color.grey(0.7));
+NeuLab.butZone.addFlowLayout(2@2, 1@1);
 
-StaticText(q.butZone, q.texsize).string_("Presets:")
-.font_(q.font).align_(\center);
+StaticText(NeuLab.butZone, NeuLab.texsize).string_("Presets:")
+.font_(NeuLab.font).align_(\center);
 
-Button(q.butZone, 50 @ q.butsize.y).font_(q.font)
+Button(NeuLab.butZone, 50 @ NeuLab.butsize.y).font_(NeuLab.font)
 .states_([["- ? +"]])
 .mouseDownAction_({ |bt, x, y|
 	var step = x div: 16 - 1;
-	if (step == 0) { step = q.preset.settings.size.rand };
-	q.preset.stepCurr(step);
+	if (step == 0) { step = NeuLab.preset.settings.size.rand };
+	NeuLab.preset.stepCurr(step);
 });
 
-Button(q.butZone, 50 @ q.butsize.y).font_(q.font)
+Button(NeuLab.butZone, 50 @ NeuLab.butsize.y).font_(NeuLab.font)
 .states_([["- ? +"]])
 .mouseDownAction_({ |bt, x, y|
 	var step = x div: 16 - 1;
-	if (step == 0) { step = q.preset.settings.size.rand };
-	q.preset.stepTarg(step);
+	if (step == 0) { step = NeuLab.preset.settings.size.rand };
+	NeuLab.preset.stepTarg(step);
 });
 
-Button(q.butZone, q.butsize).font_(q.font)
+Button(NeuLab.butZone, NeuLab.butsize).font_(NeuLab.font)
 .states_([["<< <-> >>"]])
 .mouseDownAction_({ |bt, x, y|
 	var step = (x / 50 - 1);
 	step = step * step.abs;
-	q.preset.morphValStep(q.preset.morphVal + step);
+	NeuLab.preset.morphValStep(NeuLab.preset.morphVal + step);
 });
 
-StaticText(q.butZone, q.texsize).string_("Balance:")
-.font_(q.font).align_(\center);
+StaticText(NeuLab.butZone, NeuLab.texsize).string_("Balance:")
+.font_(NeuLab.font).align_(\center);
 
 
 // make a JITView: value, parent, bounds
-q.balgui = MView(0.5, q.butZone, Rect(0, 0, 100, 25));
+NeuLab.balgui = MView(0.5, NeuLab.butZone, Rect(0, 0, 100, 25));
 // needs a spec to display proper number range
-q.balgui.putDict(\myspec, \pan).refresh;
-q.balgui.label_('Spk<-->Obj');
-q.balgui.action.add(\set, { |sl| Ndef(\RawIns).set(\balance, sl.value) });
+NeuLab.balgui.putDict(\myspec, \pan).refresh;
+NeuLab.balgui.label_('Spk<-->Obj');
+NeuLab.balgui.action.add(\set, { |sl| Ndef(\RawIns).set(\balance, sl.value) });
 
-q.balskip.stop.free;
-q.balskip = SkipJack({
+NeuLab.balskip.stop.free;
+NeuLab.balskip = SkipJack({
 	var balval = Ndef(\RawIns).get(\balance);
 	var autoval = Tdef(\autoMutate).isPlaying;
-	if (q.balgui.value != balval) {
-		q.balgui.value = balval
+	if (NeuLab.balgui.value != balval) {
+		NeuLab.balgui.value = balval
 	};
-	if (q.autoBut.value != autoval) {
-		q.autoBut.value = autoval
+	if (NeuLab.autoBut.value != autoval) {
+		NeuLab.autoBut.value = autoval
 	};
 }, 0.2);
 
-q.balgui.drawFunc.disable(\code);
-q.balgui.drawFunc.enable(\number);
+NeuLab.balgui.drawFunc.disable(\code);
+NeuLab.balgui.drawFunc.enable(\number);
 
-q.drywetBut = Button(q.butZone, q.butsize).states_([["dry <-> FX"]])
-.font_(q.font);
-q.drywetBut.mouseDownAction = { |b, x, y|
+NeuLab.drywetBut = Button(NeuLab.butZone, NeuLab.butsize).states_([["dry <-> FX"]])
+.font_(NeuLab.font);
+NeuLab.drywetBut.mouseDownAction = { |b, x, y|
 	// [b, x, y].postln;
-	q.stepDryWet(x-50 * 0.01);
+	NeuLab.stepDryWet(x-50 * 0.01);
 };
 
-q.randBut = Button(q.butZone, q.butsize).states_([["vary...RAND"]]).font_(q.font);
-q.randBut.mouseDownAction = { |b, x, y|
+NeuLab.randBut = Button(NeuLab.butZone, NeuLab.butsize).states_([["vary...RAND"]]).font_(NeuLab.font);
+NeuLab.randBut.mouseDownAction = { |b, x, y|
 	// [b, x, y].postln;
 	NdefPreset(\NeuraLaby).setRand((x * 0.01).squared);
 };
 
-StaticText(q.butZone, q.texsize).string_("Nudges:")
-.font_(q.font).align_(\center);
+StaticText(NeuLab.butZone, NeuLab.texsize).string_("Nudges:")
+.font_(NeuLab.font).align_(\center);
 (1..7).do { |num, i|
-	Button(q.butZone, q.butsize)
+	Button(NeuLab.butZone, NeuLab.butsize)
 	.states_([["-- - % + ++".format(num)]])
-	.font_(q.font)
+	.font_(NeuLab.font)
 	.mouseDownAction_({ |b, x, y|
 		// [b, x, y].postln;
-		q.nudge(x-50 * 0.01, q.myseeds[i]);
+		NeuLab.nudge(x-50 * 0.01, NeuLab.myseeds[i]);
 	});
 };
 );
 
 (
-// q.nlwin = Window('NeuraLaby', Rect(350,0,450,460)).front;
-q.nlwin = CompositeView(q.win, Rect(350,0,450,460));
-q.nlwin.addFlowLayout;
-q.nlwin.asView.decorator.shift(25, 0);
-q.npg = NdefPresetGui(NdefPreset(\NeuraLaby), 0, q.nlwin);
-q.pcg = q.pchain.gui(22,
-	parent: q.nlwin
+// NeuLab.nlwin = Window('NeuraLaby', Rect(350,0,450,460)).front;
+NeuLab.nlwin = CompositeView(NeuLab.win, Rect(350,0,450,460));
+NeuLab.nlwin.addFlowLayout;
+NeuLab.nlwin.asView.decorator.shift(25, 0);
+NeuLab.npg = NdefPresetGui(NdefPreset(\NeuraLaby), 0, NeuLab.nlwin);
+NeuLab.pcg = NeuLab.pchain.gui(22,
+	parent: NeuLab.nlwin
 );
-q.pcg.butZone.bounds = q.pcg.butZone.bounds.width_(70);
-q.pcg.buttons.do { |bt| bt.bounds = bt.bounds.width_(60) };
+NeuLab.pcg.butZone.bounds = NeuLab.pcg.butZone.bounds.width_(70);
+NeuLab.pcg.buttons.do { |bt| bt.bounds = bt.bounds.width_(60) };
 
 ///// for installation mode:
 ///// disable all on/off buttons:
-// q.pcg.buttons.do(_.enabled_(false));
+// NeuLab.pcg.buttons.do(_.enabled_(false));
 //// disable sto, del, edit, doc
 
 // editGui shows levels
-ProxyMeter.addNdefGui(q.pcg.editGui);
+ProxyMeter.addNdefGui(NeuLab.pcg.editGui);
 // make it smaller
-q.pcg.editGui.zone.bounds_(q.pcg.editGui.zone.bounds.moveBy(-40, 0));
+NeuLab.pcg.editGui.zone.bounds_(NeuLab.pcg.editGui.zone.bounds.moveBy(-40, 0));
 // make nameView more visible
-q.pcg.editGui.nameView
+NeuLab.pcg.editGui.nameView
 .background_(Color.blue).stringColor_(Color.white)
 .font_(Font(Font.defaultSansFace, 13));
 );
