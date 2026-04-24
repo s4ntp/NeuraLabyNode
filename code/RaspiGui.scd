@@ -167,6 +167,7 @@ StaticText(NeuLab.butZone, NeuLab.texsize).string_("Nudges:")
 	.mouseDownAction_({ |b, x, y|
 		// [b, x, y].postln;
 		NeuLab.nudge(x-50 * 0.01, NeuLab.myseeds[i]);
+		NeuLab.nudgeArm(x-50 * 0.01, NeuLab.myseeds[i]);
 	});
 };
 );

@@ -158,6 +158,8 @@ Ndef(\armlpNL, { |
 
 	LPF.ar(HPF.ar(LeakDC.ar(Splay.ar(chans.scramble, 1, amp)), 20), 12000).zap.flat.tanh;
 });
+);
+
 NdefPreset(\armlpNL, Ndef(\armlpNL).getHalo(\namesToStore));
 NdefPreset('armlpNL').storePath =
 NeuLab.dir.labyDesk +/+ NdefPreset('armlpNL').presetPath.basename;
@@ -166,7 +168,6 @@ NdefPreset('armlpNL').loadSettings;
 
 Spec.add(\neusyAmp, \amp);
 Ndef(\RawIns).put(10, { |neusyAmp = 1| Ndef('armlpNL').ar * neusyAmp.lag(1) });
-);
 
 
 NeuLab.nudgeArm = { |q, step = 0.1, seed = 4711|
@@ -174,6 +175,7 @@ NeuLab.nudgeArm = { |q, step = 0.1, seed = 4711|
 	fork {
 		var pre = NdefPreset('armlpNL');
 		var params = pre.namesToStore.postln;
+		thisThread.randSeed_(seed);
 		params.do { |param|
 			var proxy = pre.proxy;
 			var val = proxy.getUni(param);

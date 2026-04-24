@@ -45,7 +45,7 @@ Ndef(\RawIns, { |balance = 0, delay = 0|
 		var ampname =  NeuLab.inNames[i];
 		var amp = ampname.kr(1, lag);
 		var panname = NeuLab.panNames[i];
-		var pan = panname.kr([-1, 1][i], lag);
+		var pan = panname.kr([-0.8, 0.8][i], lag);
 
 		Pan2.ar(ndef.ar(1), pan, amp);
 	}.sum.postln;
