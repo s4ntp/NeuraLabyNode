@@ -264,7 +264,7 @@ NeuLab.nudge(-0.1, 123);
 
 // Ndef(\NeuLab).getKeysValues.flop[0].sort.cs;
 NeuLab.stepDryWet = { |q, step = 0.1|
-	var ndef = Ndef(\NeuLab);
+	var ndef = Ndef(\NeuraLaby);
 	var paramKeys = ['wet20', 'wet30', 'wet40', 'wet50'];
 	var settings = ndef.getKeysValues(paramKeys);
 	var newSettings = settings.collect { |pair|
