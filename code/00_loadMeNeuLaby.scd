@@ -1,4 +1,16 @@
 /*
+loadscript for one Neural Labyrinths node.
+usually runs on one raspberry or similar;
+audio interface is a simple USB mixer with 6 inputs,
+phantom power, and 2chan USB connection.
+
+left input is assumed to be a mic,
+right input is a contect mic;
+
+left output goes to a loudspeaker
+right output goes to a shaker that activates
+the object that the contact mic listens to.
+
 
 */
 
