@@ -11,7 +11,8 @@ NeuLab {
 			// init necessary dicts
 			defaults: (),
 			mfx: (),
-			dir: ()
+			dir: (),
+			g: ()
 		);
 		// use defaults automatically if nil:
 		NeuLab.q.parent = NeuLab.q.defaults;
