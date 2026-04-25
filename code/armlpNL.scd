@@ -169,12 +169,11 @@ NdefPreset('armlpNL').loadSettings;
 Spec.add(\neusyAmp, \amp);
 Ndef(\RawIns).put(10, { |neusyAmp = 1| Ndef('armlpNL').ar * neusyAmp.lag(1) });
 
-
-NeuLab.nudgeArm = { |q, step = 0.1, seed = 4711|
+MFdef(\nlNudge).add(\nudgeArm, { |step = 0.1, seed = 4711|
 	"nudgeArm".postln;
 	fork {
 		var pre = NdefPreset('armlpNL');
-		var params = pre.namesToStore.postln;
+		var params = pre.namesToStore;
 		thisThread.randSeed_(seed);
 		params.do { |param|
 			var proxy = pre.proxy;
@@ -182,4 +181,4 @@ NeuLab.nudgeArm = { |q, step = 0.1, seed = 4711|
 			proxy.setUni(param, (val + step.rand2));
 		};
 	}
-};
+});

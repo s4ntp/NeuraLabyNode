@@ -244,7 +244,10 @@ NeuLab.preset.setTarg(NeuLab.prekeys.take(NeuLab.prekeys.choose).postln, false);
 NeuLab.preset.setProxy(NeuLab.prekeys.take(NeuLab.prekeys.choose).postln);
 NeuLab.preset.morphVal_(0.5);
 
-NeuLab.nudge = { |q, step = 0.1, seed = 4711|
+
+NeuLab.myseeds = 16.collect { 1000.rand };
+MFdef(\nlNudge).add(\nudgeNeuLab, { |step = 0.1, seed = 4711|
+	\nudgeNeuLab.postln;
 	fork {
 		thisThread.randSeed_(seed);
 		NeuLab.params.do { |param|
@@ -253,9 +256,11 @@ NeuLab.nudge = { |q, step = 0.1, seed = 4711|
 			proxy.setUni(param, (val + step.rand2));
 		};
 	}
-};
+});
 
-NeuLab.myseeds = 16.collect { 1000.rand };
+NeuLab.nudge = { |q, step = 0.1, seed = 4711|
+	MFdef(\nlNudge).value(step, seed);
+};
 
 /*
 NeuLab.nudge(0.1, 123);
