@@ -26,10 +26,11 @@ if (foundInfos.notEmpty) {
 		{ entry == "Faderfox UC4" } { ifFilename = "uc4.scd" };
 	};
 };
+
 ifFilename ?? {
 	// use beatstep as default when nothing found:
-	"... no supported MKtl device found, default to beatstep.".postln;
-	ifFilename = "beatstep.scd";
+	"... no supported MKtl device found, default to nanokontrol2.".postln;
+	ifFilename = "nanokontrol2.scd";
 };
 
 fullpath = (here +/+ "interfaces" +/+ ifFilename);
