@@ -1,10 +1,11 @@
 (
+NeuLab.auto = NeuLab.auto ? ();
 // make a spectralyzer,
-NeuLab.spectral = NeuLab.spectral ?? { Spectralyzer.new(10) };
-NeuLab.spectral.listenTo({ SoundIn.ar(0) });	// listen to mic in
-NeuLab.spectral.makeWindow; // start displaying
-NeuLab.spectral.view.close; // and stop
-NeuLab.spectral.dt = 0.05;
+NeuLab.auto.spectral = NeuLab.auto.spectral ?? { Spectralyzer.new(10) };
+NeuLab.auto.spectral.listenTo({ SoundIn.ar(0) });	// listen to mic in
+NeuLab.auto.spectral.makeWindow; // start displaying
+NeuLab.auto.spectral.view.close; // and stop
+NeuLab.auto.spectral.dt = 0.05;
 );
 
 Tdef(\autoMutate).addSpec(\mutaMin, [0, 1]);
@@ -21,38 +22,37 @@ Tdef(\autoMutate).set(\mutaProb, 0);
 Tdef(\autoMutate).addHalo(\orderedNames,
 	[\mutaMin, \mutaSum, \mutaScale, \mutaMax, \mutaProb]);
 
-NeuLab.mutaSum = 0;
+NeuLab.auto.mutaSum = 0;
 
 // for the interfaces:
-NeuLab.autoOn = { "autoMutate ON".postln; Tdef(\autoMutate).play };
-NeuLab.autoOff = { "autoMutate OFF".postln; Tdef(\autoMutate).stop };
-NeuLab.autoToggle = {
+NeuLab.auto.autoOn = { "autoMutate ON".postln; Tdef(\autoMutate).play };
+NeuLab.auto.autoOff = { "autoMutate OFF".postln; Tdef(\autoMutate).stop };
+NeuLab.auto.autoToggle = {
 	var t = Tdef(\autoMutate);
-	if (t.isPlaying) { NeuLab.autoOff } { NeuLab.autoOn }
+	if (t.isPlaying) { NeuLab.auto.autoOff } { NeuLab.auto.autoOn }
 };
 
 (
 Tdef(\autoMutate, { |env|
 	var mutaProb = 0;
 	var dt;
-	NeuLab.spectral.start;
-	NeuLab.dbvals = [];
+	NeuLab.auto.spectral.start;
+	NeuLab.auto.dbvals = [];
 	loop {
-		NeuLab.mutaSum = 0;
-		NeuLab.ampvals = NeuLab.spectral.ampsPx.bus.getnSynchronous.max(0.001);
-		NeuLab.dbvals = NeuLab.dbvals.addFirst(NeuLab.ampvals.ampdb);
-		if (NeuLab.dbvals.size > 60) { NeuLab.dbvals = NeuLab.dbvals.keep(60) };
-		NeuLab.lastAmps = NeuLab.dbvals.collect(_[0]);
-		NeuLab.lastBandAmps = NeuLab.dbvals.collect(_.drop(1));
+		NeuLab.auto.mutaSum = 0;
+		NeuLab.auto.ampvals = NeuLab.auto.spectral.ampsPx.bus.getnSynchronous.max(0.001);
+		NeuLab.auto.dbvals = NeuLab.auto.dbvals.addFirst(NeuLab.auto.ampvals.ampdb);
+		if (NeuLab.auto.dbvals.size > 60) { NeuLab.auto.dbvals = NeuLab.auto.dbvals.keep(60) };
+		NeuLab.auto.lastAmps = NeuLab.auto.dbvals.collect(_[0]);
+		NeuLab.auto.lastBandAmps = NeuLab.auto.dbvals.collect(_.drop(1));
 		MFdef(\mutaTest).value;
-		env.mutaSum = NeuLab.mutaSum;
-		mutaProb = max(env.mutaMin, NeuLab.mutaSum)
+		env.mutaSum = NeuLab.auto.mutaSum;
+		mutaProb = max(env.mutaMin, NeuLab.auto.mutaSum)
 		* env.mutaScale;
 		env.mutaProb = mutaProb;
 		if (mutaProb.coin) {
 			"*** mutate: %\n".postf(mutaProb.round(0.0001));
-			NeuLab.nudge(mutaProb, NeuLab.myseeds.choose);
-			NeuLab.nudgeArm(mutaProb, NeuLab.myseeds.choose);
+			NeuLab.auto.nudge(mutaProb, NeuLab.myseeds.choose);
 			//
 			if (0.1.coin) {
 				"delay: ".post;
@@ -69,34 +69,34 @@ Tdef(\autoMutate, { |env|
 // various funcs that run on
 MFdef(\mutaTest).add(\post, {
 	"amps: [%-%] mean: % dev: %\n".postf(
-		*[NeuLab.lastAmps.minItem,
-			NeuLab.lastAmps.maxItem,
-			NeuLab.lastAmps.mean,
-			NeuLab.lastAmps.stdDev].round(0.01)
+		*[NeuLab.auto.lastAmps.minItem,
+			NeuLab.auto.lastAmps.maxItem,
+			NeuLab.auto.lastAmps.mean,
+			NeuLab.auto.lastAmps.stdDev].round(0.01)
 	);
 });
 MFdef(\mutaTest).enable(\post);
 MFdef(\mutaTest).disable(\post);
 
 MFdef(\mutaTest).add(\tooSoft, {
-	var add2muta = NeuLab.lastAmps.mean.abs.linlin(40, 60, 0, 0.1);
-	NeuLab.mutaSum = NeuLab.mutaSum + add2muta;
+	var add2muta = NeuLab.auto.lastAmps.mean.abs.linlin(40, 60, 0, 0.1);
+	NeuLab.auto.mutaSum = NeuLab.auto.mutaSum + add2muta;
 	if (add2muta > 0.02 and: 0.1.coin) {
 		"tooSoft: %\n".postf(add2muta.round(0.001))
 	};
 });
 
 MFdef(\mutaTest).add(\tooLoud, {
-	var add2muta = NeuLab.lastAmps.mean.linlin(-15, 0, 0, 0.1);
-	NeuLab.mutaSum = NeuLab.mutaSum + add2muta;
+	var add2muta = NeuLab.auto.lastAmps.mean.linlin(-15, 0, 0, 0.1);
+	NeuLab.auto.mutaSum = NeuLab.auto.mutaSum + add2muta;
 	if (add2muta > 0.02 and: 0.1.coin) {
 		"tooLoud: %\n".postf(add2muta.round(0.001))
 	};
 });
 
 MFdef(\mutaTest).add(\tooEven, {
-	var add2muta = NeuLab.lastAmps.stdDev.explin(0.2, 6, 0.1, 0);
-	NeuLab.mutaSum = NeuLab.mutaSum + add2muta;
+	var add2muta = NeuLab.auto.lastAmps.stdDev.explin(0.2, 6, 0.1, 0);
+	NeuLab.auto.mutaSum = NeuLab.auto.mutaSum + add2muta;
 	if (add2muta > 0.02 and: 0.1.coin) {
 		"tooEven: %\n".postf(add2muta.round(0.001))
 	};
@@ -104,8 +104,8 @@ MFdef(\mutaTest).add(\tooEven, {
 
 //
 MFdef(\mutaTest).add(\tooShrill, {
-	// var add2muta = NeuLab.lastAmps.stdDev.explin(0.2, 10, 0.1, 0);
-	// NeuLab.mutaSum = NeuLab.mutaSum + add2muta;
+	// var add2muta = NeuLab.auto.lastAmps.stdDev.explin(0.2, 10, 0.1, 0);
+	// NeuLab.auto.mutaSum = NeuLab.auto.mutaSum + add2muta;
 	// if (add2muta > 0.02) {
 	// 	"tooEven: %\n".postf(add2muta.round(0.001))
 	// };
