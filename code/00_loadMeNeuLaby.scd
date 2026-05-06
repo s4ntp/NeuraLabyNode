@@ -26,7 +26,7 @@ NeuLab.dir.labyPath = thisProcess.nowExecutingPath;
 NeuLab.dir.laby = NeuLab.dir.labyPath.dirname;
 
 // Desktop path may not work on Windows?
-NeuLab.dir.labyDesk = "~/Desktop/NeuLab/".standardizePath;
+NeuLab.dir.labyDesk = ("~".standardizePath +/+ "Desktop" +/+ "NeuLab");
 File.mkdir(NeuLab.dir.labyDesk);
 NeuLab.dir.labyAdjustPath = NeuLab.dir.labyDesk +/+ "adjustments.scd";
 
