@@ -68,8 +68,8 @@ s.waitForBoot {
 	0.2.wait;
 
 	if (NeuLab.dir.labyAdjustPath.pathMatch.isEmpty) {
-		unixCmd("cp" + (thisProcess.nowExecutingPath.dirname.dirname
-			+/+ "adjustments.scd").quote + NeuLab.dir.labyAdjustPath.quote);
+		File.copy((thisProcess.nowExecutingPath.dirname.dirname
+			+/+ "adjustments.scd"), NeuLab.dir.labyAdjustPath.quote);
 	};
 
 	NeuLab.dir.labyAdjustPath.loadPaths;
