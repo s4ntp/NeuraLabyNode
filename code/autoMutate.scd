@@ -52,7 +52,7 @@ Tdef(\autoMutate, { |env|
 		env.mutaProb = mutaProb;
 		if (mutaProb.coin) {
 			"*** mutate: %\n".postf(mutaProb.round(0.0001));
-			NeuLab.auto.nudge(mutaProb, NeuLab.myseeds.choose);
+			NeuLab.nudge(mutaProb, NeuLab.myseeds.choose);
 			//
 			if (0.1.coin) {
 				"delay: ".post;
