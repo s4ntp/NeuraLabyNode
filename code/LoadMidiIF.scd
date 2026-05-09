@@ -23,7 +23,9 @@ if (foundInfos.notEmpty) {
 		{ entry == "X-TOUCH MINI" } { ifFilename = "x-touch-mini.scd" }
 		{ entry == "LPD8" } { ifFilename = "akai-lpd8.scd" }
 		{ entry == "Arturia BeatStep" } { ifFilename = "beatstep.scd" }
-		{ entry == "Faderfox UC4" } { ifFilename = "uc4.scd" };
+		{ entry == "Faderfox UC4" } { ifFilename = "uc4.scd" }
+		{ entry == "BCF2000" } { ifFilename = "bcf2000.scd" }
+		{ entry == "MPK mini" } { ifFilename = "mpkmini.scd" };
 	};
 };
 
