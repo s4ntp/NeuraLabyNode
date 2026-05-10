@@ -48,11 +48,11 @@ NeuLab.g.testRaspiScreen = {
 };
 
 
-NeuLab.g.butsize = 100@25;
+NeuLab.g.butsize = 100@22;
 NeuLab.g.texsize = 100@36;
 
 NeuLab.g.guibutzone = CompositeView(NeuLab.g.win, Rect(130, 0, 110, 220)).background_(Color.grey(0.7));
-NeuLab.g.guibutzone.addFlowLayout(2@2, 1@1);
+NeuLab.g.guibutzone.addFlowLayout(2@2, 0@0);
 
 StaticText(NeuLab.g.guibutzone, NeuLab.g.texsize).string_("Extras:")
 .align_(\center).font_(NeuLab.g.font);
@@ -91,6 +91,10 @@ NeuLab.g.ifbut.action = { MKtl.all.do { |mk| mk.gui.showLabels } };
 
 NeuLab.g.udbut = Button(NeuLab.g.guibutzone, NeuLab.g.butsize) .states_([["quarkUpdate"]]).font_(NeuLab.g.font);
 NeuLab.g.udbut.action = { Quark("NeuraLabyNode").update };
+
+NeuLab.g.udbut = Button(NeuLab.g.guibutzone, NeuLab.g.butsize)
+.states_([["RECOMPILE", Color.white, Color.red]]).font_(NeuLab.g.font);
+NeuLab.g.udbut.action = { thisProcess.recompile };
 
 
 /////// middle strip: presets, balance, nudges
@@ -135,6 +139,9 @@ NeuLab.g.balgui = MView(0.5, NeuLab.g.butZone, Rect(0, 0, 100, 25));
 NeuLab.g.balgui.putDict(\myspec, \pan).refresh;
 NeuLab.g.balgui.label_('Spk<-->Obj');
 NeuLab.g.balgui.action.add(\set, { |sl| Ndef(\RawIns).set(\balance, sl.value) });
+
+NeuLab.g.balgui.dict.font_(NeuLab.g.font.copy.size_(16)).refresh;
+
 
 NeuLab.g.balskip.stop.free;
 NeuLab.g.balskip = SkipJack({
