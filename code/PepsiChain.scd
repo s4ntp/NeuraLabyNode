@@ -36,11 +36,11 @@ ProxyChain.add3(\ins, {
 ///// Mumma1: freq shift mod, with envelope following
 (
 ProxyChain.add3(\freqMod, \filter -> { |in, carrFreq=5000, filtRatio=1, freqShift=30|
-
+	var envel = Amplitude.ar(in, 0.01, 0.5);
 	carrFreq = carrFreq.lag(Ndef(\lag));
 	freqShift = freqShift.lag(Ndef(\lag));
 	in.collect { |chan|
-		var snd = chan * SinOsc.ar(carrFreq, [0, pi/2]);
+		var snd = chan * SinOsc.ar(carrFreq * (48 * envel).midiratio, [0, pi/2]);
 		snd = LPF.ar(snd,
 			(carrFreq * filtRatio.lag(Ndef(\lag)))
 			.clip(20, (s.sampleRate * 0.45) - carrFreq)
@@ -124,6 +124,51 @@ ProxyChain.add3(\hiPass, \filter -> { |in,
 )
 );
 
+(
+ProxyChain.add3(\rjkChaos, \filter -> { arg in,
+	cutoff = 2000, phase1 = 2, phase2 = 2, phase3 = 2,
+	p1Vol = 0, p2Vol = 0, p3Vol = 1, formant = 500, fbk = 0.9, rfbk = 0, qu = 1, rfq = 1;
+	var fin = LocalIn.ar(2);
+	var outs = 2.collect({|i|
+		var delayedSignal, p1,p2,p3, mixedSignal, inny, fout, envelo;
+		delayedSignal = in.wrapAt(i-1); //fin.wrapAt(i-1); // Cross Feedback
+		envelo = Amplitude.kr(in.wrapAt(i), 0.01, 0.4);
+		p1 = RHPF.ar(delayedSignal, Lag.kr(phase1, 0.95), qu)
+		+ RLPF.ar(delayedSignal, phase1, qu);
+		p2 = RHPF.ar(p1, Lag.kr(phase2, 0.95), qu)
+		+ RLPF.ar(delayedSignal, phase2, qu);
+		p3 = RHPF.ar(p2, Lag.kr(phase3, 0.95), qu)
+		+ RLPF.ar(delayedSignal, phase3, qu);
+		delayedSignal = ((p1 * p1Vol) + (p2 * p2Vol) + (p3 * p3Vol));
+		inny = (
+			RLPF.ar(delayedSignal, formant, rfq)
+			* LPF.ar(RHPF.ar(delayedSignal, formant, rfq) * Lag.kr(rfbk, 0.95), 7000)
+		).distort
+		+ ((delayedSignal * fbk).distort);
+		delayedSignal = Compander.ar(inny.distort, inny, 0.4, 1, 0, 0.01, 0.01);
+		delayedSignal = inny.distort;
+		mixedSignal = RLPF.ar((delayedSignal), 10000);
+		fout = RLPF.ar(mixedSignal, cutoff, 0.5);
+		[delayedSignal, fout];
+	});
+	LocalOut.ar(outs.flop.last);
+	LeakDC.ar(outs.flop.first)
+}, 1, (
+	cutoff: [2, 20000, \exp, 0, 2000],
+	phase1: [2, 1000, \exp, 0, 2],
+	phase2: [2, 1000, \exp, 0, 2],
+	phase3: [2, 1000, \exp, 0, 2],
+	p1Vol: [-1, 1, \lin, 0, 0],
+	p2Vol: [-1, 1, \lin, 0, 0],
+	p3Vol: [-1, 1, \lin, 0, 0],
+	formant: [1, 8000, \exp, 0, 500],
+	fbk: [0, 4, \lin, 0, 0.9],
+	rfbk: [0, 4, \lin, 0, 0],
+	qu: [0.001, 1, \lin, 0, 1],
+	rfq: [0.001, 1, \lin, 0, 1],
+))
+);
+
 //// big DJ filta that
 //// goes from closing LPF to HPF
 (
@@ -193,7 +238,7 @@ ProxyChain.add3(\limiter, \filter -> { |in,
 // making
 ///// tanh moved into limiter to save one GUI line
 
-NeuLab.pcSlots = [\ins, \freqMod, \ampMod, \filta, \gapz, \limiter ];
+NeuLab.pcSlots = [\ins, \freqMod, \ampMod, \rjkChaos, \gapz, \limiter ];
 
 NeuLab.pchain.free;
 NeuLab.pchain = ProxyChain.from(Ndef(\NeuraLaby), NeuLab.pcSlots).play;
@@ -204,7 +249,7 @@ Ndef(\NeuraLaby).fadeTime = 10;
 NeuLab.pchain.do { |pc, i|
 	pc.add(\freqMod, 1);
 	pc.add(\ampMod, 1);
-	pc.add(\filta, 1);
+	pc.add(\rjkChaos, 1);
 	pc.add(\gapz, 1);
 };
 
