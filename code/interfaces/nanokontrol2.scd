@@ -36,7 +36,14 @@ MKtl(\nanokontrol2).elAt(\kn, (1..6)).do { |kn, i|
 	}
 };
 
-MKtl(\nanokontrol2).elAt(\sl).do { |sl, i|
+MKtl(\nanokontrol2).elAt(\sl, 7).label = "delay";
+MKtl(\nanokontrol2).elAt(\sl, 7).action = { |sl|
+	Ndef(\RawIns).setUni(\delay, sl.value);
+	"delay: %\n".postf(Ndef(\RawIns).get(\delay));
+};
+
+
+MKtl(\nanokontrol2).elAt(\sl, (0..6)).do { |sl, i|
 	sl.label = "nudge rd %".format(i);
 	sl.action = { |sl|
 		var nudgeval = ((sl.deviceValue - sl.prevDeviceValue)).clip2(5);

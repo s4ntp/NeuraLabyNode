@@ -11,6 +11,12 @@ MKtl.all[\uc4].free;
 MKtl(\uc4, "*uc4_pg");
 
 
+// big slider does delay time
+MKtl(\uc4).elAt(\xfader).action = { |sl|
+	Ndef(\RawIns).setUni(\delay, sl.value);
+	"delay: %\n".postf(Ndef(\RawIns).get(\delay));
+};
+
 MKtl(\uc4).elAt(\pgSl1, \bt, 0, 0)
 .action_({ NeuLab.auto.autoOn })
 .elemDesc.label = "autoON";
