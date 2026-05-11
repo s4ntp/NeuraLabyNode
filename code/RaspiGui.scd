@@ -61,7 +61,10 @@ NeuLab.g.neuralbut = Button(NeuLab.g.guibutzone, NeuLab.g.butsize) .states_([["N
 NeuLab.g.neuralbut.action = { WinBounds.showOrMake(\NeuralSynth) };
 
 NeuLab.g.redobut = Button(NeuLab.g.guibutzone, NeuLab.g.butsize) .states_([["RESET SOUND"]]).font_(NeuLab.g.font);
-NeuLab.g.redobut.action = { Ndef(\NeuraLaby).rebuild.resetNodeMap };
+NeuLab.g.redobut.action = {
+	Ndef(\NeuraLaby).rebuild.resetNodeMap;
+	(Quark("NeuraLabyNode").localPath +/+ "code" +/+ "PepsiChain.scd").load;
+};
 
 NeuLab.g.autoBut = Button(NeuLab.g.guibutzone, NeuLab.g.butsize)
 .states_([["autoMutate?"],

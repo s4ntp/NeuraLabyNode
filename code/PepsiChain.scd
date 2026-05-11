@@ -206,6 +206,9 @@ NeuLab.pchain.do { |pc, i|
 	pc.add(\ampMod, 1);
 	pc.add(\filta, 1);
 	pc.add(\gapz, 1);
+	pc.add(\ins, 1);
+	pc.add(\limiter, 1);
+	NeuLab.addWetSpecs;
 };
 
 // set wetspecs to linear crossfade!
@@ -250,7 +253,7 @@ MFdef(\nlNudge).add(\nudgeNeuLab, { |step = 0.1, seed = 4711|
 	\nudgeNeuLab.postln;
 	fork {
 		thisThread.randSeed_(seed);
-		NeuLab.params.do { |param|
+		NeuLab.params.reject {|param| NeuLab.pchain.paramsPerSlot.last.includes(param)}.do { |param|
 			var proxy = NeuLab.pchain.proxy;
 			var val = proxy.getUni(param);
 			proxy.setUni(param, (val + step.rand2));
@@ -286,15 +289,13 @@ NeuLab.stepDryWet = { |q, step = 0.1|
 NeuLab.stepDryWet(0.1);
 NeuLab.stepDryWet(-0.1);
 */
-
+/*
 fork ({
 	0.5.wait;
 	// turn on input and limiter after gui is made
 	// to force gui update / wet labels.
-	NeuLab.pchain.add(\ins, 1);
-	NeuLab.pchain.add(\limiter, 1);
-	0.1.wait;
-	NeuLab.addWetSpecs;
+
 });
+*/
 )
 
