@@ -30,7 +30,7 @@ NeuLab.dir.labyDesk = ("~".standardizePath +/+ "Desktop" +/+ "NeuLab");
 File.mkdir(NeuLab.dir.labyDesk);
 NeuLab.dir.labyAdjustPath = NeuLab.dir.labyDesk +/+ "adjustments.scd";
 
-NeuLab.envelopeFollowerServer = NetAddr("192.168.0.170", 57120);
+NeuLab.envelopeFollowerServer = NetAddr("192.168.0.173", 57120);
 
 
 // give server enough realtime memory,
