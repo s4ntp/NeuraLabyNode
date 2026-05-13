@@ -142,19 +142,31 @@ NeuLab.g.balgui = MView(0.5, NeuLab.g.butZone, Rect(0, 0, 100, 25));
 NeuLab.g.balgui.putDict(\myspec, \pan).refresh;
 NeuLab.g.balgui.label_('Spk<-->Obj');
 NeuLab.g.balgui.action.add(\set, { |sl| Ndef(\RawIns).set(\balance, sl.value) });
-
 NeuLab.g.balgui.dict.font_(NeuLab.g.font.copy.size_(16)).refresh;
+
+// make a JITView: value, parent, bounds
+NeuLab.g.delgui = MView(0.5, NeuLab.g.butZone, Rect(0, 0, 100, 25));
+// needs a spec to display proper number range
+NeuLab.g.delgui.putDict(\myspec, Ndef(\RawIns).getSpec(\delay)).refresh;
+NeuLab.g.delgui.label_('Delay');
+NeuLab.g.delgui.action.add(\set, { |sl| Ndef(\RawIns).set(\delay, sl.value) });
+NeuLab.g.delgui.dict.font_(NeuLab.g.font.copy.size_(16)).refresh;
+NeuLab.g.delgui.dict.font_(NeuLab.g.font.copy.size_(16)).refresh;
 
 
 NeuLab.g.balskip.stop.free;
 NeuLab.g.balskip = SkipJack({
 	var balval = Ndef(\RawIns).get(\balance);
 	var autoval = Tdef(\autoMutate).isPlaying;
+	var delval = Ndef(\RawIns).get(\delay);
 	if (NeuLab.g.balgui.value != balval) {
 		NeuLab.g.balgui.value = balval
 	};
 	if (NeuLab.g.autoBut.value != autoval) {
 		NeuLab.g.autoBut.value = autoval
+	};
+	if (NeuLab.g.delgui.value != delval) {
+		NeuLab.g.delgui.value = delval
 	};
 }, 0.2);
 

@@ -10,6 +10,14 @@ MKtl(\uc4).gui.showLabels;
 MKtl.all[\uc4].free;
 MKtl(\uc4, "*uc4_pg");
 
+NeuLab.uc4 = NeuLab.uc4 ? ();
+NeuLab.uc4.knobMode = \relative;
+
+// big slider does delay time
+MKtl(\uc4).elAt(\xfader).action = { |sl|
+	Ndef(\RawIns).setUni(\delay, sl.value);
+	"delay: %\n".postf(Ndef(\RawIns).get(\delay));
+};
 
 MKtl(\uc4).elAt(\pgSl1, \bt, 0, 0)
 .action_({ NeuLab.auto.autoOn })
@@ -38,13 +46,23 @@ MKtl(\uc4).elAt(\pgKn1, \kn).deviceValue = 64;
 
 // first encoder does less/more
 MKtl(\uc4).elAt(\pgKn1, \kn, 0).action_({ |enc|
-	var step = (enc.deviceValue - enc.prevDeviceValue).clip2(5);
+	var step;
+	if (NeuLab.uc4.knobMode == \relative) {
+		step = (enc.deviceValue - 64).clip2(5);
+	}{
+		step = (enc.deviceValue - enc.prevDeviceValue).clip2(5);
+	};
 	NeuLab.stepDryWet((step * 0.015));
 }).elemDesc.label = "LessMore";
 
 // first bottom encoder does spk object balance
 MKtl(\uc4).elAt(\pgKn1, \kn, 4).action_({ |enc|
-	var step = (enc.deviceValue - enc.prevDeviceValue).clip2(5);
+	var step;
+	if (NeuLab.uc4.knobMode == \relative) {
+		step = (enc.deviceValue - 64).clip2(5);
+	}{
+		step = (enc.deviceValue - enc.prevDeviceValue).clip2(5);
+	};
 	NeuLab.stepSpkObj((step * 0.015));
 }).elemDesc.label = "Spk Obj";
 
@@ -53,22 +71,33 @@ MKtl(\uc4).elAt(\pgKn1, \kn, 4).action_({ |enc|
 MKtl(\uc4).elAt(\pgKn1, \kn, [1, 2, 3, 5, 6, 7]).do { |enc, i|
 	enc.elemDesc.label = "nudge rd" + (i+1);
 	enc.action = { |enc|
-		var diff = (enc.deviceValue - enc.prevDeviceValue).clip2(5);
-		var step = (diff * 0.02);
+		var diff, step;
+		if (NeuLab.uc4.knobMode == \relative) {
+			diff = (enc.deviceValue - 64).clip2(5);
+		}{
+			diff = (enc.deviceValue - enc.prevDeviceValue).clip2(5);
+		};
+		step = (diff * 0.02);
 		NeuLab.nudge(step, NeuLab.myseeds[i]);
 	}
 };
 
 // // use sliders for relative control
-MKtl(\uc4).elAt(\pgSl1, \sl, (0..7)).do { |enc, i|
+MKtl(\uc4).elAt(\pgSl1, \sl, (0..6)).do { |enc, i|
 	enc.elemDesc.label = "nudge rd" + (i+1);
 	enc.action = { |sl|
 		var diff = (sl.deviceValue - sl.prevDeviceValue).clip2(5);
 		var step = (diff * 0.005);
 		NeuLab.nudge(step, NeuLab.myseeds[i]);
-		// defer ({ sl.deviceValue = 64 }, 0.02);
 	}
 };
+
+// // use rightmost slider delay
+MKtl(\uc4).elAt(\pgSl1, \sl, 7).do { |sl, i|
+	sl.elemDesc.label = "delay";
+	sl.action = { |sl| Ndef(\RawIns).setUni(sl.value) }
+};
+
 
 // // use xfader for preset crossfade
 MKtl(\uc4).elAt('xfader').do { |fad|
@@ -78,4 +107,5 @@ MKtl(\uc4).elAt('xfader').do { |fad|
 		NeuLab.preset.morphValStep(NeuLab.preset.morphVal + nudgeval);
 	}
 };
+
 

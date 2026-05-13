@@ -5,6 +5,12 @@ MKtl(\xtouch).gui.showLabels;
 MKtl.all[\xtouch].free;
 MKtl(\xtouch, "*x-touch-mini");
 
+// big slider does delay time
+MKtl(\xtouch).elAt(\A, \sl).action = { |sl|
+	Ndef(\RawIns).setUni(\delay, sl.value);
+	"delay: %\n".postf(Ndef(\RawIns).get(\delay));
+};
+
 // first encoder does less/more
 MKtl(\xtouch).elAt(\A, \chan, 0, \enc, 0).action_({ |enc|
 	var diff = (enc.deviceValue - enc.prevDeviceValue).clip2(5);
