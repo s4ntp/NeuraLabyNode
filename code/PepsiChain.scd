@@ -285,6 +285,17 @@ NeuLab.stepDryWet = { |q, step = 0.1|
 	};
 	ndef.set(*newSettings.flat);
 };
+
+NeuLab.envelopeFollowerProxy = Ndef(\envFollow, {Amplitude.kr(InFeedback.ar(\target.kr(0, spec:[0,1,\lin,1])), 0.01, 0.1) });
+
+if (NeuLab.envelopeFollowerSkipJack.notNil) { NeuLab.envelopeFollowerSkipJack.stop };
+
+NeuLab.envelopeFollowerSkipJack = SkipJack({
+	NeuLab.envelopeFollowerServer.sendMsg("/NL/amplitude", NeuLab.myhostname, NeuLab.envelopeFollowerProxy.bus.getSynchronous);
+},1/20)
+
+
+
 /*
 NeuLab.stepDryWet(0.1);
 NeuLab.stepDryWet(-0.1);

@@ -19,7 +19,7 @@ var t0 = Main.elapsedTime;
 
 "NeuralLabyrinths setup loading...\n\n".postln;
 
-NeuLab.myhostname = NeuLab.myhostname ? unixCmdGetStdOut("whoami").split($.).first;
+NeuLab.myhostname = NeuLab.myhostname ? unixCmdGetStdOut("hostname").split($.).first.stripWhiteSpace;
 "*** NeuLab.myhostname: %\n".postf(NeuLab.myhostname);
 
 NeuLab.dir.labyPath = thisProcess.nowExecutingPath;
@@ -29,6 +29,8 @@ NeuLab.dir.laby = NeuLab.dir.labyPath.dirname;
 NeuLab.dir.labyDesk = ("~".standardizePath +/+ "Desktop" +/+ "NeuLab");
 File.mkdir(NeuLab.dir.labyDesk);
 NeuLab.dir.labyAdjustPath = NeuLab.dir.labyDesk +/+ "adjustments.scd";
+
+NeuLab.envelopeFollowerServer = NetAddr("192.168.0.170", 57120);
 
 
 // give server enough realtime memory,
