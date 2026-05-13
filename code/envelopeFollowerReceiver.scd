@@ -27,7 +27,7 @@ OSCdef(\NLamps, {|msg|
 }, "/NL/amplitude");
 
 
-w = Window.new("light mixer", Rect(0,0,800,480));
+w = Window.new("light mixer", Rect(0,60,800,420));
 w.view.layout = GridLayout.rows(*[
 	~stationToMidi.keys.asArray.collect{|txt|StaticText().string_(txt)},
 	(~stationMinMax.collect{|vals, idx|
