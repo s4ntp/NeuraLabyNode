@@ -18,5 +18,5 @@ fork {
 	Ndef(\aooReceiver, {InFeedback.ar(~aooReceiverBus, 1)});
 };
 Spec.add(\aooAmp, \amp);
-Ndef(\RawIns).put(20, { |aooAmp = 1| Ndef(\aooReceiver).ar(1) * aooAmp.lag(1) });
+Ndef(\RawIns).put(20, { |aooAmp = 1| Ndef(\aooReceiver).ar(1)!2 * aooAmp.lag(1) });
 )
