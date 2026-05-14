@@ -286,7 +286,7 @@ NeuLab.stepDryWet = { |q, step = 0.1|
 	ndef.set(*newSettings.flat);
 };
 
-NeuLab.envelopeFollowerProxy = Ndef(\envFollow, {Amplitude.kr(InFeedback.ar(\target.kr(0, spec:[0,1,\lin,1])), 1, 1) });
+NeuLab.envelopeFollowerProxy = Ndef(\envFollow, {Amplitude.kr(InFeedback.ar(\target.kr(1, spec:[0,1,\lin,1])), 1, 1) });
 
 if (NeuLab.envelopeFollowerSkipJack.notNil) { NeuLab.envelopeFollowerSkipJack.stop };
 
