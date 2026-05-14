@@ -64,6 +64,15 @@ s.waitForBoot {
 
 	0.2.wait;
 
+	if (\Aoo.asClass.notNil) {
+		"trying to load Aoo receiver patch: ".postln;
+		try {
+			"aooReceiver.scd".postln.loadRelative.postln;
+		};
+	};
+
+	0.2.wait;
+
 	// always make the small RaspiGui
 	"RaspiGui.scd".postln.loadRelative;
 
