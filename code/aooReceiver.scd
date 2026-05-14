@@ -15,6 +15,8 @@ fork {
 		"  metadata: ".post;
 		metadata.postln;
 	});
-	Ndef(\aooReceiver, {InFeedback.ar(~aooReceiverBus, 1)}).play;
-}
+	Ndef(\aooReceiver, {InFeedback.ar(~aooReceiverBus, 1)});
+};
+Spec.add(\aooAmp, \amp);
+Ndef(\RawIns).put(20, { |aooAmp = 1| Ndef(\aooReceiver).ar(1) * aooAmp.lag(1) });
 )
