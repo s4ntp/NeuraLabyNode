@@ -54,10 +54,11 @@ Ndef(\RawIns, { |balance = 0, delay = 0|
 	mix;
 });
 
-Ndef(\RawIns).put(99, { |balance = 0|
+Ndef(\RawIns).put(99, \filter -> { |in, balance = 0|
 	var lag = Ndef('lag').kr[0];
-	Balance2.ar(mix[0], mix[1], balance.lag(lag))
+	Balance2.ar(in[0], in[1], balance.lag(lag))
 });
+Ndef(\RawIns).set(\wet99, 1);
 
 
 Ndef(\pinkTest, { PinkNoise.ar }).vol_(0.25);
